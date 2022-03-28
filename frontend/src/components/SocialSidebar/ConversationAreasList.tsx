@@ -1,5 +1,55 @@
-import { Box } from '@chakra-ui/react';
-import React from 'react';
+import { Box, ListItem, UnorderedList } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import ConversationArea, { ConversationAreaListener, NO_TOPIC_STRING } from '../../classes/ConversationArea';
+import Player from '../../classes/Player';
+import useConversationAreas from '../../hooks/useConversationAreas'
+import usePlayersInTown from '../../hooks/usePlayersInTown';
+import PlayerName from './PlayerName';
+import { sortAlphabetically } from './PlayersList';
+
+/**
+ * Prop Type for ConversationArea
+ */
+type ConversationAreaProp = {
+  conversationArea: ConversationArea
+}
+
+/**
+ * Component for each individual conversation Area
+ * @param param0 takes in a ConversationArea of type ConversationAreaProp 
+ * @returns A React Element that displays the relevant converstion area information such as 
+ * Conversation Area Label and Topic as well as the list of players within the conversation area
+ */
+function ConversationAreaName({conversationArea}: ConversationAreaProp) {
+  const [occupants, setOccupants] = useState(conversationArea.occupants);
+  useEffect(() => {
+    const setOccupantsToOccupantsList = (newOccupants: string[]) => {
+      setOccupants(newOccupants);
+    };
+    const listener: ConversationAreaListener = {onOccupantsChange: setOccupantsToOccupantsList};
+    conversationArea.addListener(listener);
+
+    return function cleanUp() {
+      conversationArea.removeListener(listener);
+    };
+  }, [conversationArea]);
+
+  const playersInTown = usePlayersInTown();
+  const conversationAreaOccupants = occupants
+  .map((playerId) => playersInTown.find((player) => player.id === playerId))
+  .filter((occupant: Player | undefined): occupant is Player => occupant !== undefined);
+
+  const listItems = conversationAreaOccupants.map((player) => (
+    <ListItem key={player.id}> 
+      <PlayerName key={player.id} player={player}/>  
+    </ListItem>));
+
+  return (
+  <Box>
+    <h3><b>{conversationArea.label}: {conversationArea.topic}</b></h3>
+    <UnorderedList> {listItems} </UnorderedList>
+  </Box>);
+}
 
 /**
  * Displays a list of "active" conversation areas, along with their occupants 
@@ -24,6 +74,23 @@ import React from 'react';
  * 
  * See relevant hooks: useConversationAreas, usePlayersInTown.
  */
+
 export default function ConversationAreasList(): JSX.Element {
-  return <Box />;
+  const townConversationAreas = useConversationAreas()
+  .map((conversationArea) => conversationArea)
+  .filter((conversationArea) => conversationArea.topic !== NO_TOPIC_STRING)
+  .sort((a, b) => sortAlphabetically(a.label, b.label));
+  
+  const renderedConversationAreas = townConversationAreas.map((conversationArea) => 
+  <ConversationAreaName key={conversationArea.label} conversationArea={conversationArea}/>)
+  const toRender = (townConversationAreas.length === 0) ? <Box> No active conversation areas </Box> : renderedConversationAreas;
+
+  return (
+    <div>
+      <h2>
+        <strong>Active Conversation Areas:</strong>
+      </h2>
+      {toRender}
+    </div>
+  );
 }
