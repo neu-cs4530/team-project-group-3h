@@ -8,6 +8,8 @@ import useConversationAreas from '../../hooks/useConversationAreas';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerMovement from '../../hooks/usePlayerMovement';
 import usePlayersInTown from '../../hooks/usePlayersInTown';
+import GameWindow from '../Game/GameWindow';
+import GameLobby from '../Game/WordleLobby';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import { Callback } from '../VideoCall/VideoFrontend/types';
 import NewConversationModal from './NewCoversationModal';
@@ -748,6 +750,9 @@ export default function WorldMap(): JSX.Element {
       <div id='map-container' />
       <div id='social-container'>
         <SocialSidebar />
+      </div>
+      <div id='game-container'>
+        <GameWindow />
       </div>
     </div>
   );
