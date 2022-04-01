@@ -1,4 +1,4 @@
-import { GameAction, GameState } from "../CoveyTypes";
+import { GameAction, GameState, TeamState } from "../CoveyTypes";
 import IGame from "./IGame";
 import Player from "./Player";
 
@@ -14,7 +14,7 @@ export default class WordleGame implements IGame {
 
     private teamTwoGuesses: string[];
 
-    private winner?: string;
+    private winner: string | undefined;
 
     constructor() {
         this.active = false;
@@ -41,7 +41,22 @@ export default class WordleGame implements IGame {
         throw new Error("Method not implemented.");
     }
     getState(): GameState {
-        throw new Error("Method not implemented.");
+        const team1State: TeamState = {
+            teamMembers: this.team1.map((player) => player),
+            guesses: this.teamOneGuesses.map((guess) => guess),
+        };
+        const team2State: TeamState = {
+            teamMembers: this.team2.map((player) => player),
+            guesses: this.teamTwoGuesses.map((guess) => guess),
+        };
+        const gameState: GameState = {
+            teamOneState: team1State,
+            teamTwoState: team2State,
+            winner: this.winner ? this.winner : " ",
+            isActive: this.active
+        };
+        return gameState;
+        //throw new Error("Method not implemented.");
     }
 
 }
