@@ -28,9 +28,15 @@ export default class WordleGame implements IGame {
     setSessionActive(isSessionStarted: boolean): void {
         throw new Error("Method not implemented.");
     }
+    
     addPlayerToTeam(player: Player, teamToJoin: number): void {
-        throw new Error("Method not implemented.");
+        if (teamToJoin !== 1 && teamToJoin !== 2) {
+            throw new Error("Invalid team");
+        }
+        const teamArray: string[] = (teamToJoin === 1)? this.team2 : this.team2;
+        teamArray.push(player.id);
     }
+    
     removePlayer(playerID: string): void {
         throw new Error("Method not implemented.");
     }
