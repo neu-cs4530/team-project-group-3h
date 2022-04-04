@@ -24,6 +24,9 @@ export default class WordleGame implements IGame {
         this.teamOneGuesses = [];
         this.teamTwoGuesses = [];
     }
+    playGame(): void {
+        throw new Error("Method not implemented.");
+    }
 
     setSessionActive(isSessionStarted: boolean): void {
         throw new Error("Method not implemented.");
