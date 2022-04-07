@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, VStack, Text, Button } from '@chakra-ui/react';
-import WordleLobby from './WordleLobby';
+import GameBoard from './GameBoard';
 
 export default function GameWindow(): JSX.Element {
     // will need to use the model hook to access the state of the game (game list vs lobby vs game play vs game over)
@@ -8,7 +8,7 @@ export default function GameWindow(): JSX.Element {
 
     if (state === 'list') {
         return (
-            <VStack align='center'>
+            <VStack width='250px' align='center'>
                 <Text fontSize='lg'>Choose a game to play!</Text>
                 <Button onClick={() => setState('lobby')} colorScheme='blue' size='md'>Wordle</Button>
                 <Button onClick={() => window.open("https://sudoku.com/")} colorScheme='blue' size='md'>Sudoku</Button>
@@ -17,5 +17,5 @@ export default function GameWindow(): JSX.Element {
             </VStack>
         );
     }
-    return <Box><WordleLobby /></Box>;
+    return <Box><GameBoard /></Box>;
 };
