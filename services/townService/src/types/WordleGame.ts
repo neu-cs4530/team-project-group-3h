@@ -1,10 +1,13 @@
 import { GameAction, GameState, TeamState } from "../CoveyTypes";
 import IGame from "./IGame";
 import Player from "./Player";
+import WordHandler from "./WordHandler";
 
 export default class WordleGame implements IGame {
 
     private active: boolean;
+
+    private wordHandler: WordHandler;
 
     private team1: string[];
 
@@ -23,6 +26,10 @@ export default class WordleGame implements IGame {
 
         this.teamOneGuesses = [];
         this.teamTwoGuesses = [];
+        this.wordHandler = new WordHandler();
+    }
+    playGame(): void {
+        throw new Error("Method not implemented.");
     }
 
     setSessionActive(isSessionStarted: boolean): void {
