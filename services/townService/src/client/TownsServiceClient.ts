@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import { UserLocation } from '../CoveyTypes';
+import IGame from '../types/IGame';
 
 
 export type ServerPlayer = { _id: string, _userName: string, location: UserLocation };
@@ -20,6 +21,7 @@ export type ServerConversationArea = {
   topic: string;
   occupantsByID: string[];
   boundingBox: BoundingBox;
+  //gameModel: IGame;
 };
 
 /**
