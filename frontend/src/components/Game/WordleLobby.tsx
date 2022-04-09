@@ -19,6 +19,7 @@ export default function WordleLobby(): JSX.Element {
 
   return (
     <VStack align='center'>
+      <h1> WORDLE </h1>
       <Text fontSize='lg'>Join a team to play Wordle!</Text>
       <Stack spacing={2} direction='row' align='center'>
         <Button onClick={() => (team === 'red') ? setTeam('none') : setTeam('red')} colorScheme='red' size='sm'>{redButtonText}</Button>
