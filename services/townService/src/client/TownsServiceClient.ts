@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
-import { GameAction, UserLocation } from '../CoveyTypes';
+import { UserLocation } from '../CoveyTypes';
 import IGame from '../types/IGame';
 
 
@@ -108,18 +108,6 @@ export interface ConversationAreaCreateRequest {
   sessionToken: string;
   conversationArea: ServerConversationArea;
 }
-
-/**
- * Payload sent by the client to input a Game Action
- */
- export interface GameActionRequest {
-  coveyTownID: string;
-  sessionToken: string;
-  gameAction: GameAction;
-  conversationArea: ServerConversationArea;
-}
-
-
 
 /**
  * Envelope that wraps any response from the server
