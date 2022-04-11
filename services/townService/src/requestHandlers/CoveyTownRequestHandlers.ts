@@ -4,7 +4,7 @@ import Player from '../types/Player';
 import { ChatMessage, CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { ConversationAreaCreateRequest, ServerConversationArea } from '../client/TownsServiceClient';
+import { ConversationAreaCreateRequest, GameActionRequest, ServerConversationArea } from '../client/TownsServiceClient';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -196,6 +196,19 @@ export function conversationAreaCreateHandler(_requestData: ConversationAreaCrea
     response: {},
     message: !success ? `Unable to create conversation area ${_requestData.conversationArea.label} with topic ${_requestData.conversationArea.topic}` : undefined,
   };
+}
+
+export function GameActionRequestHandler(_requestData: GameActionRequest) : ResponseEnvelope<Record<string, null>> {
+  const townsStore = CoveyTownsStore.getInstance();
+  const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
+
+  if (!townController?.getSessionByToken(_requestData.sessionToken)){
+    return {
+      isOK: false, response: {}, message: `Unable to create conversation area ${_requestData.conversationArea.label} with topic ${_requestData.conversationArea.topic}`,
+    };
+  }
+  
+  throw new Error("Method not implemented.");
 }
 
 /**
