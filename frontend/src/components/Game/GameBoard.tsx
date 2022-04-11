@@ -26,6 +26,7 @@ type AllRowsProps = {
  * @param props the letter to display and its color 
  * @returns JSX.Element representing one guessed letter
  */
+// add map or dictionary to relate color to number
 function WordleLetter(props: WordleLetterProps): JSX.Element {
   const {letter, color} = props;
 
@@ -43,6 +44,7 @@ function WordleLetter(props: WordleLetterProps): JSX.Element {
  * @param props the guess to display and its corresponding color information for each letter, as well as a boolean telling us whether to show full or partial information
  * @returns JSX.Element representing an entire guessed wordle row
  */
+// use map instead
 function WordleRow(props: WordleRowProps): JSX.Element {
     const {guessArray, letterColors, showLetters} = props; 
 

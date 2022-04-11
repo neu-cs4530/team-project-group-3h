@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Box, VStack, Text, Button } from '@chakra-ui/react';
 import GameBoard from './GameBoard';
+import WordleLobby from './WordleLobby';
 
 export default function GameWindow(): JSX.Element {
     // will need to use the model hook to access the state of the game (game list vs lobby vs game play vs game over)
+    // don't hard code width
     const [state, setState] = useState('list');
 
     if (state === 'list') {
