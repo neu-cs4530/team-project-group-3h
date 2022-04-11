@@ -4,6 +4,7 @@ import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import {
   conversationAreaCreateHandler,
+  gameCreateHandler,
   townCreateHandler, townDeleteHandler,
   townJoinHandler,
   townListHandler,
@@ -13,7 +14,7 @@ import {
 import { logError } from '../Utils';
 
 export default function addTownRoutes(http: Server, app: Express): io.Server {
-  /*
+  /**
    * Create a new session (aka join a town)
    */
   app.post('/sessions', express.json(), async (req, res) => {
@@ -107,13 +108,36 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         });
     }
   });
-
+  /**
+   * Create a conversation area
+   */
   app.post('/towns/:townID/conversationAreas', express.json(), async (req, res) => {
     try {
       const result = conversationAreaCreateHandler({
         coveyTownID: req.params.townID,
         sessionToken: req.body.sessionToken,
         conversationArea: req.body.conversationArea,
+      });
+      res.status(StatusCodes.OK)
+        .json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message: 'Internal server error, please see log in server for more details',
+        });
+    }
+  });
+  /**
+   * Create a game
+   */
+  app.post('/towns/:townID/games', express.json(), async (req, res) => {
+    try {
+      const result = gameCreateHandler({
+        coveyTownID: req.params.townID,
+        sessionToken: req.body.sessionToken,
+        conversationAreaLabel: req.body.conversationAreaLabel,
+        game: req.body.game,
       });
       res.status(StatusCodes.OK)
         .json(result);

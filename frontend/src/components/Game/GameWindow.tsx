@@ -6,19 +6,7 @@ import ConversationArea, { NO_TOPIC_STRING } from '../../classes/ConversationAre
 import { ServerPlayer } from '../../classes/Player';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useConversationAreas from '../../hooks/useConversationAreas';
-
-// mock
-
-type GameConvoArea = {
-    label : string
-    topic : string
-    game : Game | undefined
-}
-
-type Game = undefined | {
-    state : string
-}
-
+import IGame from '../../classes/IGame'
 
 export default function GameWindow(): JSX.Element {
     // will need to use the model hook to access the state of the game (game list vs lobby vs game play vs game over)
@@ -26,8 +14,8 @@ export default function GameWindow(): JSX.Element {
     const [playerID] = useState(useCoveyAppState().myPlayerID);
     const conversationAreas = useConversationAreas();
     const [currentConversationArea, setCurrentConversationArea] = useState<ConversationArea | undefined>(undefined);
-    const [currentGame, setCurrentGame] = useState<Game>(undefined);
-    const [mockGame, setMockGame] = useState<Game>({state:'list'});
+    const [currentGame, setCurrentGame] = useState<IGame | undefined>(undefined);
+    const [currentState, setCurrentState] = useState<string | undefined>(undefined);
 
     const playerMovementCallbacks = usePlayerMovement();
 
@@ -48,22 +36,25 @@ export default function GameWindow(): JSX.Element {
 
     // if currentGame's state has changed, rerender
     useEffect(() => {
-    }, [currentGame?.state]);
+    }, [currentState]);
 
     // if currentGame has changed, rerender
     useEffect(() => {
-    }, [currentGame]);
+        if(!currentConversationArea) {
+            setCurrentState(undefined);
+        }
+        if (!currentGame) {
+            setCurrentState('list');
+        }
+        else {
+            setCurrentState('lobby');
+        }
+    }, [currentGame, currentConversationArea]);
 
     // if currentConversationArea has changed, set currentGame
     useEffect(() => {
-        // setCurrentGame(currentConversationArea.game);
-        if (currentConversationArea) {
-            setCurrentGame(mockGame);
-        }
-        else {
-            setCurrentGame(undefined);
-        }
-    }, [currentConversationArea, mockGame, mockGame?.state]);
+        setCurrentGame(currentConversationArea?.game);
+    }, [currentConversationArea]);
 
 
     // if the player is not in an active conversation, show nothing
@@ -71,15 +62,12 @@ export default function GameWindow(): JSX.Element {
         return <Box> </Box>
     }
     // if game started, show that
-    switch (currentGame?.state) {
+    switch (currentState) {
         case 'list': {
             return (
                 <VStack align='center'>
                     <Text fontSize='lg'>Choose a game to play!</Text>
-                    <Button onClick={() => {
-                        if (mockGame) {
-                            mockGame.state = 'lobby';
-                        }}} colorScheme='blue' size='md'>Wordle</Button>
+                    <Button onClick={() => setCurrentState('lobby')} colorScheme='blue' size='md'>Wordle</Button>
                     <Button onClick={() => window.open("https://sudoku.com/")} colorScheme='blue' size='md'>Sudoku</Button>
                     <Button onClick={() => window.open("https://www.washingtonpost.com/crossword-puzzles/daily/")} colorScheme='blue' size='md'>Daily Crossword</Button>
                     <Button onClick={() => window.open("https://playtictactoe.org/")} colorScheme='blue' size='md'>Tic Tac Toe</Button>

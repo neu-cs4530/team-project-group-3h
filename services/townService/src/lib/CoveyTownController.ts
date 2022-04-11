@@ -2,6 +2,7 @@ import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
+import IGame from '../types/IGame';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
 import IVideoClient from './IVideoClient';
@@ -206,6 +207,22 @@ export default class CoveyTownController {
     playersInThisConversation.forEach(player => {player.activeConversationArea = newArea;});
     newArea.occupantsByID = playersInThisConversation.map(player => player.id);
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(newArea));
+    return true;
+  }
+
+  /**
+   * Creates a game within the conversation area.
+   * 
+   * @param game Information describing the game to create
+   * @param conversationAreaLabel The label of the conversation area that the game belongs to
+   * @returns true if the game is successfully created, or false if not.
+   */
+  createGame(game: IGame, conversationAreaLabel: string): boolean {
+    const conversationArea = this._conversationAreas.find((area) => area.label === conversationAreaLabel);
+    if (!conversationArea) {
+      return false;
+    }
+    conversationArea.gameModel = game;
     return true;
   }
 
