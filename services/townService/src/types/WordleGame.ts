@@ -1,4 +1,4 @@
-import { GameAction, GameState, TeamState } from "../CoveyTypes";
+import { GameAction, GameState, Guess, TeamState } from "../CoveyTypes";
 import IGame from "./IGame";
 import Player from "./Player";
 import WordHandler from "./WordHandler";
@@ -7,69 +7,87 @@ export default class WordleGame implements IGame {
 
     private active: boolean;
 
+    private enabled: boolean;
+
     private wordHandler: WordHandler;
 
-    private team1: string[];
+    private blueTeam: string[];
 
-    private teamOneGuesses: string[];
+    private blueGuesses: Guess[];
 
-    private team2: string[];
+    private redTeam: string[];
 
-    private teamTwoGuesses: string[];
+    private redGuesses: Guess[];
 
     private winner: string | undefined;
 
     constructor() {
+        this.enabled = false;
         this.active = false;
-        this.team1 = [];
-        this.team2 = [];
+        this.blueTeam = [];
+        this.redTeam = [];
 
-        this.teamOneGuesses = [];
-        this.teamTwoGuesses = [];
+        this.blueGuesses = [];
+        this.redGuesses = [];
         this.wordHandler = new WordHandler();
-    }
-    playGame(): void {
-        throw new Error("Method not implemented.");
     }
 
     setSessionActive(isSessionStarted: boolean): void {
-        throw new Error("Method not implemented.");
+        //throw new Error("Method not implemented.");
+        this.enabled = isSessionStarted;
     }
     
     addPlayerToTeam(player: Player, teamToJoin: number): void {
         if (teamToJoin !== 1 && teamToJoin !== 2) {
             throw new Error("Invalid team");
         }
-        const teamArray: string[] = (teamToJoin === 1)? this.team2 : this.team2;
-        teamArray.push(player.id);
+        const playerID: string = player.id;
+        if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) throw new Error('Player in both teams');
+        if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) this.removePlayer(playerID);
+        const teamArray: string[] = (teamToJoin === 1)? this.redTeam : this.redTeam;
+        teamArray.push(player.id); //error vs boolean    
     }
     
     removePlayer(playerID: string): void {
-        throw new Error("Method not implemented.");
+        this.blueTeam.filter((player) => player !== playerID);
+        this.redTeam.filter((player) => player !== playerID);
     }
+    
     gameActive(isGameStarted: boolean): void {
-        throw new Error("Method not implemented.");
+        this.active = isGameStarted;
     }
+    
     inputAction(action: GameAction): boolean {
-        throw new Error("Method not implemented.");
+        if (this.redTeam.indexOf(action.playerID) === -1 && this.blueTeam.indexOf(action.playerID) === -1) return false;
+        if (this.redTeam.indexOf(action.playerID) !== -1 && this.blueTeam.indexOf(action.playerID) !== -1) return false;
+
+        try {
+            const teamToAddGuessTo: Guess[] = (this.blueTeam.indexOf(action.playerID) !== -1)? this.blueGuesses : this.redGuesses;
+            const guessArray: number[] = this.wordHandler.handleGuess(action.actionString);
+            const playerGuess: Guess = {word: action.actionString, guessResult: guessArray};
+            teamToAddGuessTo.push(playerGuess);
+            return true;
+        } catch(e: any) {
+            return false;
+        }
     }
+
     getState(): GameState {
-        const team1State: TeamState = {
-            teamMembers: this.team1.map((player) => player),
-            guesses: this.teamOneGuesses.map((guess) => guess),
+        const blueTeamState: TeamState = {
+            teamMembers: this.blueTeam.map((player) => player),
+            guesses: this.blueGuesses.map((guess) => guess.word),
         };
-        const team2State: TeamState = {
-            teamMembers: this.team2.map((player) => player),
-            guesses: this.teamTwoGuesses.map((guess) => guess),
+        const redTeamState: TeamState = {
+            teamMembers: this.redTeam.map((player) => player),
+            guesses: this.redGuesses.map((guess) => guess.word),
         };
         const gameState: GameState = {
-            teamOneState: team1State,
-            teamTwoState: team2State,
+            teamOneState: blueTeamState,
+            teamTwoState: redTeamState,
             winner: this.winner ? this.winner : " ",
             isActive: this.active
         };
         return gameState;
-        //throw new Error("Method not implemented.");
     }
 
 }
