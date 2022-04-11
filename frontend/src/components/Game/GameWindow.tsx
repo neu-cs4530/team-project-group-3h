@@ -19,5 +19,13 @@ export default function GameWindow(): JSX.Element {
             </VStack>
         );
     }
+    if (state === 'lobby') {
+        return (
+            <VStack width='250px' align='center'>
+                <WordleLobby />
+                <Button onClick={() => setState('game')} colorScheme='green' size='md'>Start Game</Button>
+            </VStack>
+        );
+    }
     return <Box><GameBoard /></Box>;
 };

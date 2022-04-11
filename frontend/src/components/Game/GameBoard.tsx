@@ -1,4 +1,4 @@
-import { Box, Button, Stack, VStack, Text, HStack } from '@chakra-ui/react';
+import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
 type GuessInformation = {
@@ -105,11 +105,14 @@ function AllRows(props: AllRowsProps) : JSX.Element {
  */
 export default function GameBoard(): JSX.Element {
   const [team, setTeam] = useState('red');
+  const [turn, setTurn] = useState('red');
+  const [input, setInput] = useState('');
 
-  const redGuesses : GuessInformation[] = [{guessArray: ['t', 'r', 'a', 'c', 'e'], letterColors: [0, 0, 1, 0, 0]}, {guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
-  const blueGuesses : GuessInformation[] = [{guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
+  const redGuesses : GuessInformation[] = [{guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
+  const blueGuesses : GuessInformation[] = [{guessArray: ['t', 'r', 'a', 'c', 'e'], letterColors: [0, 0, 1, 0, 0]}, {guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
   
   const yourTeamHeader = (team === 'none') ? 'You are Spectating!' : `You are ${  team  }!`;
+  const turnHeader = (team === turn) ? 'Its your turn - enter guess below!' : 'Please wait your turn';
 
   const redRows = redGuesses.map((guess, index) => 
   <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={team === 'red'}/>);
@@ -125,15 +128,28 @@ export default function GameBoard(): JSX.Element {
       <Text fontSize='xl'>Wordle</Text>
       <HStack spacing='24px'>
         <VStack>
-          {redBoard}
           <Text fontSize='sm'>Red Teams Board</Text>
+          {redBoard}
         </VStack>
         <VStack>
-          {blueBoard}
           <Text fontSize='sm'>Blue Teams Board</Text>
+          {blueBoard}
         </VStack>
       </HStack>
-      <Text fontSize='lg'>{yourTeamHeader}</Text>
+      <Text fontSize='lg'>{`${yourTeamHeader  } ${  turnHeader}`}</Text>
+      <Input 
+        size='sm'
+        value={input} 
+        onChange={(e)=> setInput(e.currentTarget.value)} 
+        onKeyPress={e=> {
+          if (e.key === 'Enter' && turn === 'red') {
+            setTurn('blue');
+          }
+          if (e.key === 'Enter' && turn === 'blue') {
+            setTurn('red');
+          }
+        }}
+        isDisabled={(turn !== team)}  />
     </VStack>
   );
 }

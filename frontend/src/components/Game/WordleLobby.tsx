@@ -24,7 +24,6 @@ export default function WordleLobby(): JSX.Element {
         <Button onClick={() => (team === 'red') ? setTeam('none') : setTeam('red')} colorScheme='red' size='sm'>{redButtonText}</Button>
         <Button onClick={() => (team === 'blue') ? setTeam('none') : setTeam('blue')} colorScheme='blue' size='sm'>{blueButtonText}</Button>
       </Stack>
-      <Button colorScheme='green' size='md'>Start Game</Button>
       <Text fontSize='sm'>{yourTeamHeader}</Text>
     </VStack>
   );
