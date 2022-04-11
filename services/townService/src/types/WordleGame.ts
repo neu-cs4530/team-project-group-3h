@@ -7,6 +7,8 @@ export default class WordleGame implements IGame {
 
     private active: boolean;
 
+    private enabled: boolean;
+
     private wordHandler: WordHandler;
 
     private blueTeam: string[];
@@ -20,6 +22,7 @@ export default class WordleGame implements IGame {
     private winner: string | undefined;
 
     constructor() {
+        this.enabled = false;
         this.active = false;
         this.blueTeam = [];
         this.redTeam = [];
@@ -28,12 +31,10 @@ export default class WordleGame implements IGame {
         this.redGuesses = [];
         this.wordHandler = new WordHandler();
     }
-    playGame(): void {
-        throw new Error("Method not implemented.");
-    }
 
     setSessionActive(isSessionStarted: boolean): void {
-        throw new Error("Method not implemented.");
+        //throw new Error("Method not implemented.");
+        this.enabled = isSessionStarted;
     }
     
     addPlayerToTeam(player: Player, teamToJoin: number): void {
@@ -53,7 +54,7 @@ export default class WordleGame implements IGame {
     }
     
     gameActive(isGameStarted: boolean): void {
-        throw new Error("Method not implemented.");
+        this.active = isGameStarted;
     }
     
     inputAction(action: GameAction): boolean {
