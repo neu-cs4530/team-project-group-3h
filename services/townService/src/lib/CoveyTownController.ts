@@ -177,6 +177,41 @@ export default class CoveyTownController {
   }
 
   /**
+   * TODO
+   * @param conversationAreaLabel T
+   * @param action 
+   * @returns 
+   */
+  inputGameAction(conversationAreaLabel: String, action: GameAction): boolean {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.inputAction(action);
+    }
+
+    return false;
+  }
+
+  /**
+   * TODO
+   * @param conversationAreaLabel 
+   * @param player 
+   * @param team 
+   * @returns 
+   */
+  addPlayerToGameTeam(conversationAreaLabel: String, player: Player, team: number): void {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.addPlayerToTeam(player, team);
+    }
+  }
+
+  /**
    * Creates a new conversation area in this town if there is not currently an active
    * conversation with the same label.
    *
