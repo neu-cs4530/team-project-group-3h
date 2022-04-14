@@ -4,7 +4,7 @@ import Player from '../types/Player';
 import { ChatMessage, CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { ConversationAreaCreateRequest, ServerConversationArea } from '../client/TownsServiceClient';
+import { ConversationAreaCreateRequest, GameCreateRequest, ServerConversationArea } from '../client/TownsServiceClient';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -195,6 +195,31 @@ export function conversationAreaCreateHandler(_requestData: ConversationAreaCrea
     isOK: success,
     response: {},
     message: !success ? `Unable to create conversation area ${_requestData.conversationArea.label} with topic ${_requestData.conversationArea.topic}` : undefined,
+  };
+}
+
+/**
+ * A handler to process the "Create Game" request
+ * The intended flow of this handler is:
+ * * Fetch the town controller for the specified town ID
+ * * Validate that the sessionToken is valid for that town
+ * * Ask the TownController to create the game
+ * @param _requestData Game create request
+ */
+export function gameCreateHandler(_requestData: GameCreateRequest) : ResponseEnvelope<Record<string, null>> {
+  const townsStore = CoveyTownsStore.getInstance();
+  const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
+  if (!townController?.getSessionByToken(_requestData.sessionToken)){
+    return {
+      isOK: false, response: {}, message: `Unable to create game ${_requestData.game.getTitle()} within conversation area ${_requestData.conversationAreaLabel}`,
+    };
+  }
+  const success = townController.createGame(_requestData.game, _requestData.conversationAreaLabel);
+
+  return {
+    isOK: success,
+    response: {},
+    message: !success ? `Unable to create game ${_requestData.game.getTitle()} within conversation area ${_requestData.conversationAreaLabel}` : undefined,
   };
 }
 
