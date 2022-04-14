@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 
 type GuessInformation = {
   guessArray: string[],
-  letterColors: number[] // 1 for green, 0 for grey, -1 for yellow
+  letterColors: number[] 
 }
 
 type WordleRowProps = {
   guessArray: string[],
-  letterColors: number[], // 1 for green, 0 for grey, -1 for yellow
+  letterColors: number[], 
   showLetters: boolean
 }
 
@@ -29,14 +29,9 @@ type AllRowsProps = {
 // add map or dictionary to relate color to number
 function WordleLetter(props: WordleLetterProps): JSX.Element {
   const {letter, color} = props;
+  const letterColorMatch = new Map([[0, 'gray'], [1, 'green'], [-1, 'yellow']]);
 
-  if (color === 0) {
-    return <Button size='sm' colorScheme='gray'>{letter}</Button>
-  }
-  if (color === 1) {
-    return <Button size='sm' colorScheme='green'>{letter}</Button>
-  } 
-  return <Button size='sm' colorScheme='yellow'>{letter}</Button>
+  return <Button size='sm' colorScheme={letterColorMatch.get(color)}>{letter}</Button>
 }
 
 /**
@@ -44,17 +39,12 @@ function WordleLetter(props: WordleLetterProps): JSX.Element {
  * @param props the guess to display and its corresponding color information for each letter, as well as a boolean telling us whether to show full or partial information
  * @returns JSX.Element representing an entire guessed wordle row
  */
-// use map instead
 function WordleRow(props: WordleRowProps): JSX.Element {
     const {guessArray, letterColors, showLetters} = props; 
 
     return(
         <HStack spacing='12px'>
-          <WordleLetter letter={(showLetters) ? guessArray[0] : ''} color={letterColors[0]}/>
-          <WordleLetter letter={(showLetters) ? guessArray[1] : ''} color={letterColors[1]}/>
-          <WordleLetter letter={(showLetters) ? guessArray[2] : ''} color={letterColors[2]}/>
-          <WordleLetter letter={(showLetters) ? guessArray[3] : ''} color={letterColors[3]}/>
-          <WordleLetter letter={(showLetters) ? guessArray[4] : ''} color={letterColors[4]}/>
+          {guessArray.map((guess, index) => <WordleLetter key={index.toString()} letter={(showLetters) ? guess : ''} color={letterColors[index]}/>)}
       </HStack>
     );
 }
@@ -64,15 +54,13 @@ function WordleRow(props: WordleRowProps): JSX.Element {
  * @returns JSX.Element representing a blank, unguessed row
  */
 function BlankRow(): JSX.Element {
-  return(
-      <HStack spacing='12px'>
-        <Button size='sm' variant='outline'/>
-        <Button size='sm' variant='outline'/>
-        <Button size='sm' variant='outline'/>
-        <Button size='sm' variant='outline'/>
-        <Button size='sm' variant='outline'/>
-    </HStack>
-  );
+  const blankRows = [];
+
+  for(let i = 0; i < 5; i += 1) {
+    blankRows.push(<Button size='sm' variant='outline'/>);
+  }
+
+  return <HStack spacing='12px'>{blankRows}</HStack>
 }
 
 /**
@@ -82,17 +70,13 @@ function BlankRow(): JSX.Element {
  */
 function AllRows(props: AllRowsProps) : JSX.Element {
   const {guessRows} = props;
+  const allRows = [];
 
-  return(
-    <VStack>
-      {(guessRows.length > 0) ? guessRows[0] : <BlankRow/>}
-      {(guessRows.length > 1) ? guessRows[1] : <BlankRow/>}
-      {(guessRows.length > 2) ? guessRows[2] : <BlankRow/>}
-      {(guessRows.length > 3) ? guessRows[3] : <BlankRow/>}
-      {(guessRows.length > 4) ? guessRows[4] : <BlankRow/>}
-      {(guessRows.length > 5) ? guessRows[5] : <BlankRow/>}
-    </VStack>
-  );
+  for(let i = 0; i < 6; i += 1) {
+    allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow/>);
+  }
+
+  return <VStack>{allRows}</VStack>
 }
 
 

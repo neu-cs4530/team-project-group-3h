@@ -75,13 +75,16 @@ export default function GameWindow(): JSX.Element {
             );
         }
         case 'lobby' : {
-            return <WordleLobby />
+            return <VStack aligh='center'>
+                <WordleLobby />
+                <Button onClick={() => setCurrentState('game')} colorScheme='green' size='sm'>Start Game</Button>
+            </VStack>
         }
         case 'game' : {
-            return <div /> // <WordleGame></WordleGame>
+            return <GameBoard /> 
         }
         default : {
-            return <Box> </Box>
+            return <div />
         }
     }
 };
