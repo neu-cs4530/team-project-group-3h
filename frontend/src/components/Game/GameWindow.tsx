@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, VStack, Text, Button } from '@chakra-ui/react';
+import GameBoard from './GameBoard';
 import WordleLobby from './WordleLobby';
 import usePlayerMovement from '../../hooks/usePlayerMovement';
 import ConversationArea, { NO_TOPIC_STRING } from '../../classes/ConversationArea';
@@ -9,7 +10,6 @@ import useConversationAreas from '../../hooks/useConversationAreas';
 import IGame from '../../classes/IGame'
 
 export default function GameWindow(): JSX.Element {
-    // will need to use the model hook to access the state of the game (game list vs lobby vs game play vs game over)
     // need to tell back end state has changed!
     const [playerID] = useState(useCoveyAppState().myPlayerID);
     const conversationAreas = useConversationAreas();
