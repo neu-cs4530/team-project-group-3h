@@ -42,10 +42,5 @@ export default interface IGame {
   /**
      * Returns the Game State
      */
-  getState(): GameState;
-
-  /**
-     * Starts the current Game
-     */
-  playGame(): void;
+    getState(): GameState;
 }
