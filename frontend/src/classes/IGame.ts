@@ -1,4 +1,4 @@
-import { GameAction, GameState } from '../CoveyTypes';
+import { GameAction, GameState } from './GameTypes';
 import type Player from './Player';
 
 export default interface IGame {
@@ -42,5 +42,10 @@ export default interface IGame {
   /**
      * Returns the Game State
      */
-    getState(): GameState;
+  getState(): GameState;
+
+  /**
+     * Starts the current Game
+     */
+  playGame(): void;
 }

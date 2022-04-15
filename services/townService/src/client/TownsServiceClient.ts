@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import { UserLocation } from '../CoveyTypes';
-import IGame from '../types/IGame';
+import type IGame from '../types/IGame';
 
 
 export type ServerPlayer = { _id: string, _userName: string, location: UserLocation };
@@ -21,7 +21,7 @@ export type ServerConversationArea = {
   topic: string;
   occupantsByID: string[];
   boundingBox: BoundingBox;
-  //gameModel: IGame;
+  gameModel: IGame;
 };
 
 /**
@@ -110,6 +110,16 @@ export interface ConversationAreaCreateRequest {
 }
 
 /**
+ * Payload sent by the client to create a new game
+ */
+export interface GameCreateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  game: IGame;
+}
+
+/**
  * Envelope that wraps any response from the server
  */
 export interface ResponseEnvelope<T> {
@@ -177,6 +187,11 @@ export default class TownsServiceClient {
 
   async createConversationArea(requestData: ConversationAreaCreateRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async createGame(requestData: GameCreateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 

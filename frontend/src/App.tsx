@@ -187,9 +187,9 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('playerMoved', (player: ServerPlayer) => {
+        playerMovementCallbacks.forEach(cb => cb(player));
         if (player._id !== gamePlayerID) {
           const now = Date.now();
-          playerMovementCallbacks.forEach(cb => cb(player));
           if (
             !player.location.moving ||
             now - lastRecalculateNearbyPlayers > CALCULATE_NEARBY_PLAYERS_MOVING_DELAY_MS
@@ -198,6 +198,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             const updatePlayer = localPlayers.find(p => p.id === player._id);
             if (updatePlayer) {
               updatePlayer.location = player.location;
+              
             } else {
               localPlayers = localPlayers.concat(Player.fromServerPlayer(player));
               setPlayersInTown(localPlayers);

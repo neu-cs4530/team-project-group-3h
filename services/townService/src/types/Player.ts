@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { ServerConversationArea } from '../client/TownsServiceClient';
+import type { ServerConversationArea } from '../client/TownsServiceClient';
 import { UserLocation } from '../CoveyTypes';
 
 /**

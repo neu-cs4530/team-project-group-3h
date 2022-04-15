@@ -1,10 +1,12 @@
 import BoundingBox from './BoundingBox';
+import IGame from './IGame'
 
 export type ServerConversationArea = {
   label: string;
   topic?: string;
   occupantsByID: string[];
   boundingBox: BoundingBox;
+  game?: IGame;
 };
 
 export type ConversationAreaListener = {
@@ -22,6 +24,8 @@ export default class ConversationArea {
   private _boundingBox: BoundingBox;
 
   private _listeners: ConversationAreaListener[] = [];
+
+  private _game: IGame | undefined;
 
   constructor(label: string, boundingBox: BoundingBox, topic?: string) {
     this._boundingBox = boundingBox;
@@ -55,6 +59,10 @@ export default class ConversationArea {
     return this._topic || NO_TOPIC_STRING;
   }
 
+  get game() {
+    return this._game;
+  }
+
   isEmpty(): boolean {
     return this._topic === undefined;
   }
@@ -69,6 +77,7 @@ export default class ConversationArea {
       occupantsByID: this.occupants,
       topic: this.topic,
       boundingBox: this.getBoundingBox(),
+      game: this.game,
     };
   }
 

@@ -5,11 +5,15 @@ import wordListPath from 'word-list';
  * Class to handle the logic of a wordle game
  */
 export default class WordHandler {
-    private _wordList: string[];
-    private _targetWord: string = '';
-    private _wordMap: Map<string, number> = new Map;
-    private _wordLength: number;
-    private _correctAnswerList: number[] = [];
+  private _wordList: string[];
+
+  private _targetWord = '';
+
+  private _wordMap: Map<string, number> = new Map;
+
+  private _wordLength: number;
+
+  private _correctAnswerList: number[] = [];
 
     /**
      * Constructor for WordHandler
@@ -42,6 +46,7 @@ export default class WordHandler {
             }
         }
     }
+  }
 
     /**
      * Sets the target word to a random word in the dictionary
@@ -51,13 +56,14 @@ export default class WordHandler {
         this._targetWord = this._wordList[i];
     }
 
-    public get wordList(): string[] {
-        return this._wordList;
-    }
+  public get wordList(): string[] {
+    return this._wordList;
+  }
 
-    public  get targetWord(): string {
-        return this._targetWord;
-    }
+  public  get targetWord(): string {
+    return this._targetWord;
+  }
+
 
     /**
      * Handles a wordle game guess
@@ -71,32 +77,32 @@ export default class WordHandler {
         if (this._wordList.indexOf(guessLowerCase) === -1) throw new Error("Invalid Word");
         if (guessLowerCase === this._targetWord) return this._correctAnswerList;
         
-        const guessResult: number[] = [];
-        for (let i = 0; i < this._wordLength; i += 1) {
-            guessResult.push(0);
-        }
-        const lettersSeenSoFar: Map<string, number> = new Map;
+    const guessResult: number[] = [];
+    for (let i = 0; i < this._wordLength; i += 1) {
+      guessResult.push(0);
+    }
+    const lettersSeenSoFar: Map<string, number> = new Map;
 
-        for (let i = 0; i < guess.length; i += 1) {
-            const currentLetter = guessLowerCase[i];
-            const targetLetter = this._targetWord[i];
-            if(currentLetter === targetLetter) {
-                const currentMapValue = lettersSeenSoFar.get(currentLetter);
-                lettersSeenSoFar.set(currentLetter, (currentMapValue || 0) +1);
-                guessResult[i] = 1;
-            } 
-        }
-        for (let i = 0; i < guess.length; i += 1) {
-            const currentLetter = guessLowerCase[i];
-            const targetLetter = this._targetWord[i];
-            if (this._wordMap.has(currentLetter) && 
+    for (let i = 0; i < guess.length; i += 1) {
+      const currentLetter = guessLowerCase[i];
+      const targetLetter = this._targetWord[i];
+      if (currentLetter === targetLetter) {
+        const currentMapValue = lettersSeenSoFar.get(currentLetter);
+        lettersSeenSoFar.set(currentLetter, (currentMapValue || 0) + 1);
+        guessResult[i] = 1;
+      } 
+    }
+    for (let i = 0; i < guess.length; i += 1) {
+      const currentLetter = guessLowerCase[i];
+      const targetLetter = this._targetWord[i];
+      if (this._wordMap.has(currentLetter) && 
             (lettersSeenSoFar.get(currentLetter) || 0) < (this._wordMap.get(currentLetter) || 0)
             && currentLetter !== targetLetter) {
-                const currentMapValue = lettersSeenSoFar.get(currentLetter);
-                lettersSeenSoFar.set(currentLetter, (currentMapValue || 0) +1);
-                guessResult[i] = -1;
-            }
-        }
-        return guessResult;
+        const currentMapValue = lettersSeenSoFar.get(currentLetter);
+        lettersSeenSoFar.set(currentLetter, (currentMapValue || 0) + 1);
+        guessResult[i] = -1;
+      }
     }
+    return guessResult;
+  }
 }

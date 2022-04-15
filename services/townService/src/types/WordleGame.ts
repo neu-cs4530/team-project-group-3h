@@ -5,7 +5,9 @@ import WordHandler from "./WordHandler";
 
 export default class WordleGame implements IGame {
 
-    private active: boolean;
+  private readonly _title = 'Wordle';
+
+  private active: boolean;
 
     private enabled: boolean;
 
@@ -19,7 +21,6 @@ export default class WordleGame implements IGame {
 
     private redGuesses: Guess[];
 
-    private winner: string | undefined;
 
     constructor() {
         this.enabled = false;
@@ -46,8 +47,9 @@ export default class WordleGame implements IGame {
         if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) this.removePlayer(playerID);
         const teamArray: string[] = (teamToJoin === 1)? this.redTeam : this.redTeam;
         teamArray.push(player.id); //error vs boolean    
-    }
+  }
     
+
     removePlayer(playerID: string): void {
         this.blueTeam.filter((player) => player !== playerID);
         this.redTeam.filter((player) => player !== playerID);
@@ -90,4 +92,7 @@ export default class WordleGame implements IGame {
         return gameState;
     }
 
+  public get title() : string {
+    return this._title;
+  }
 }
