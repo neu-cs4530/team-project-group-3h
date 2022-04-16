@@ -9,6 +9,11 @@ import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useConversationAreas from '../../hooks/useConversationAreas';
 import IGame from '../../classes/IGame'
 
+/**
+ * A Game Window that is rendered when a player is in an active conversation area. Associated with a particular conversation area,
+ * and shows a list of games the player can choose to play.
+ * @returns A JSX.Element representing a Game Window when there is an active conversation area
+ */
 export default function GameWindow(): JSX.Element {
     // need to tell back end state has changed!
     const [playerID] = useState(useCoveyAppState().myPlayerID);
@@ -75,13 +80,19 @@ export default function GameWindow(): JSX.Element {
             );
         }
         case 'lobby' : {
-            return <VStack aligh='center'>
+            return <VStack align='center'>
                 <WordleLobby />
                 <Button onClick={() => setCurrentState('game')} colorScheme='green' size='sm'>Start Game</Button>
             </VStack>
         }
         case 'game' : {
-            return <GameBoard /> 
+            return <VStack align='center'>
+                <GameBoard gameover={false}/>
+                <Button onClick={() => setCurrentState('gameover')} colorScheme='green' size='sm'>End Game</Button>
+            </VStack>
+        }
+        case 'gameover' : {
+            return <GameBoard gameover={true}/>
         }
         default : {
             return <div />
