@@ -21,6 +21,10 @@ type AllRowsProps = {
   guessRows: JSX.Element[]
 }
 
+type GameBoardProps = {
+  gameover: boolean
+}
+
 /**
  * A button representing a guessed letter as part of a wordle row, with the correct color (gray, green, or yellow)
  * @param props the letter to display and its color 
@@ -79,7 +83,6 @@ function AllRows(props: AllRowsProps) : JSX.Element {
   return <VStack>{allRows}</VStack>
 }
 
-
 /**
  * Should show the game board and its current state to both spectators and game players. Should also show a Wordle title bar,
  * the player's state, and an input tab for players to input guesses when it is their team's turn.
@@ -87,8 +90,9 @@ function AllRows(props: AllRowsProps) : JSX.Element {
  * IN PROGRESS
  *
  */
-export default function GameBoard(): JSX.Element {
-  const [team, setTeam] = useState('red');
+export default function GameBoard(props: GameBoardProps): JSX.Element {
+  const {gameover} = props;
+  const [team, setTeam] = useState('none');
   const [turn, setTurn] = useState('red');
   const [input, setInput] = useState('');
 
@@ -96,13 +100,14 @@ export default function GameBoard(): JSX.Element {
   const blueGuesses : GuessInformation[] = [{guessArray: ['t', 'r', 'a', 'c', 'e'], letterColors: [0, 0, 1, 0, 0]}, {guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
   
   const yourTeamHeader = (team === 'none') ? 'You are Spectating!' : `You are ${  team  }!`;
-  const turnHeader = (team === turn) ? 'Its your turn - enter guess below!' : 'Please wait your turn';
+  const turnHeader = ((team === turn) && (team !== 'none')) ? 'Its your turn - enter guess below!' : 'Please wait your turn';
+  const displayText = (gameover) ? 'Game Over' : `${yourTeamHeader  } ${  turnHeader}`
 
   const redRows = redGuesses.map((guess, index) => 
-  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={team === 'red'}/>);
+  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={(team !== 'blue') || gameover}/>);
 
   const blueRows = blueGuesses.map((guess, index) => 
-  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={team === 'blue'}/>);
+  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={(team !== 'red') || gameover}/>);
 
   const redBoard = <AllRows guessRows={redRows}/>;
   const blueBoard = <AllRows guessRows={blueRows}/>;
@@ -120,7 +125,7 @@ export default function GameBoard(): JSX.Element {
           {blueBoard}
         </VStack>
       </HStack>
-      <Text fontSize='lg'>{`${yourTeamHeader  } ${  turnHeader}`}</Text>
+      <Text fontSize='lg'>{displayText}</Text>
       <Input 
         size='sm'
         value={input} 
@@ -133,7 +138,7 @@ export default function GameBoard(): JSX.Element {
             setTurn('red');
           }
         }}
-        isDisabled={(turn !== team)}  />
+        isDisabled={(turn !== team) || (team === 'none')} />
     </VStack>
   );
 }
