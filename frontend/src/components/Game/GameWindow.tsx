@@ -92,7 +92,7 @@ export default function GameWindow(): JSX.Element {
             </VStack>
         }
         case 'gameover' : {
-            return <GameBoard gameover={true}/>
+            return <GameBoard gameover/>
         }
         default : {
             return <div />
