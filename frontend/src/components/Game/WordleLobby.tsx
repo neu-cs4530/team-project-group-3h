@@ -3,12 +3,8 @@ import React, { useState } from 'react';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 
 /**
- * Should show players in the conversation area (if we have this as a side bar next to a conversation area we don't need to replicate this), 
- * Should have buttons to join Red or Blue team, and a button to start the game (in sidebar)
- * 
- * The start game button should launch a new tab or a pop-up window with the Wordle Game 
- * (we could integrate it on screen later if needed)
- *
+ * A Wordle Lobby, with buttons to join a team, your current state (red, blue, spectator), and a list of players on each team
+ * @returns A JSX Element representing the Wordle lobby
  */
 export default function WordleLobby(): JSX.Element {
   const [team, setTeam] = useState('none');
