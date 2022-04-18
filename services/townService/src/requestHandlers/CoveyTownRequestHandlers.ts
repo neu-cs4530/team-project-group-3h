@@ -211,7 +211,7 @@ export function gameCreateHandler(_requestData: CreateGameRequest) : ResponseEnv
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
   if (!townController?.getSessionByToken(_requestData.sessionToken)){
     return {
-      isOK: false, response: {}, message: `Unable to create game ${_requestData.game.getTitle()} within conversation area ${_requestData.conversationAreaLabel}`,
+      isOK: false, response: {}, message: `Unable to create game within conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
   const success = townController.createGame(_requestData.conversationAreaLabel);
@@ -219,7 +219,7 @@ export function gameCreateHandler(_requestData: CreateGameRequest) : ResponseEnv
   return {
     isOK: success,
     response: {},
-    message: !success ? `Unable to create game ${_requestData.game.getTitle()} within conversation area ${_requestData.conversationAreaLabel}` : undefined,
+    message: !success ? `Unable to create game within conversation area ${_requestData.conversationAreaLabel}` : undefined,
   };
 }
 
