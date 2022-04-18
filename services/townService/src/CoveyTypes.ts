@@ -22,15 +22,9 @@ export type GameAction = {
 };
 
 export type GameState = {
-<<<<<<< HEAD
-  teamOneState: TeamState;
-  teamTwoState: TeamState;
-  // teams: Map<String, TeamState>;
-=======
   teamOneState: TeamState|undefined;
   teamTwoState: TeamState|undefined;
   //teams: Map<String, TeamState>;
->>>>>>> ad4a87b (Please don't touch any of these files)
   winner: string;
   isActive: boolean;
 };
