@@ -115,7 +115,7 @@ export default function BackgroundThumbnail({ thumbnail, imagePath, name, index 
       onClick={() =>
         setBackgroundSettings({
           type: thumbnail,
-          index: index,
+          index,
         })
       }
     >

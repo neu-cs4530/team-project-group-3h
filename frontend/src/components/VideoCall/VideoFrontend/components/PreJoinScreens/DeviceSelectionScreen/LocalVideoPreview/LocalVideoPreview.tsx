@@ -1,8 +1,8 @@
 import React from 'react';
-import AvatarIcon from '../../../../icons/AvatarIcon';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
-import LocalAudioLevelIndicator from '../../../LocalAudioLevelIndicator/LocalAudioLevelIndicator';
 import { LocalVideoTrack } from 'twilio-video';
+import AvatarIcon from '../../../../icons/AvatarIcon';
+import LocalAudioLevelIndicator from '../../../LocalAudioLevelIndicator/LocalAudioLevelIndicator';
 import VideoTrack from '../../../VideoTrack/VideoTrack';
 import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 

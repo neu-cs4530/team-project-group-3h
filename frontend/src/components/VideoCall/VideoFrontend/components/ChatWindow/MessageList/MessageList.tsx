@@ -15,7 +15,7 @@ const getFormattedTime = (message?: ChatMessage) =>
 
 export default function MessageList({ messages }: MessageListProps) {
   const { room } = useVideoContext();
-  const localParticipant = room!.localParticipant;
+  const {localParticipant} = room!;
 
   const players = usePlayersInTown();
 

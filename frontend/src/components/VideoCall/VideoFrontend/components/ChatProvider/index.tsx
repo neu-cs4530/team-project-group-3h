@@ -24,7 +24,7 @@ export const ChatProvider: React.FC = ({ children }) => {
     if (conversation) {
       const handleMessageAdded = (message: ChatMessage) =>
         setMessages(oldMessages => [...oldMessages, message]);
-      //TODO - store entire message queue on server?
+      // TODO - store entire message queue on server?
       // conversation.getMessages().then(newMessages => setMessages(newMessages.items));
       conversation.onMessageAdded(handleMessageAdded);
       return () => {

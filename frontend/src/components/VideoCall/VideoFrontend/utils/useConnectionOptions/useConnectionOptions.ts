@@ -33,7 +33,7 @@ export default function useConnectionOptions() {
     // you are using Peer-to-Peer or 'Go' Rooms.
     preferredVideoCodecs: [{ codec: 'VP8', simulcast: roomType !== 'peer-to-peer' && roomType !== 'go' }],
 
-    //@ts-ignore - Internal use only. This property is not exposed in type definitions.
+    // @ts-ignore - Internal use only. This property is not exposed in type definitions.
     environment: process.env.REACT_APP_TWILIO_ENVIRONMENT,
   };
 
@@ -43,7 +43,7 @@ export default function useConnectionOptions() {
   }
 
   if (process.env.REACT_APP_TWILIO_ENVIRONMENT === 'dev') {
-    //@ts-ignore - Internal use only. This property is not exposed in type definitions.
+    // @ts-ignore - Internal use only. This property is not exposed in type definitions.
     connectionOptions!.wsServer = 'wss://us2.vss.dev.twilio.com/signaling';
   }
 

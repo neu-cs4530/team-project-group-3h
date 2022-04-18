@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { LocalAudioTrack, LocalVideoTrack, Participant, RemoteAudioTrack, RemoteVideoTrack } from 'twilio-video';
 
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 import AudioLevelIndicator from '../AudioLevelIndicator/AudioLevelIndicator';
 import AvatarIcon from '../../icons/AvatarIcon';
 import NetworkQualityLevel from '../NetworkQualityLevel/NetworkQualityLevel';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
 
 import useIsRecording from '../../hooks/useIsRecording/useIsRecording';
 import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
@@ -119,7 +119,7 @@ interface MainParticipantInfoProps {
 export default function MainParticipantInfo({ participant, children }: MainParticipantInfoProps) {
   const classes = useStyles();
   const { room } = useVideoContext();
-  const localParticipant = room!.localParticipant;
+  const {localParticipant} = room!;
   const isLocal = localParticipant === participant;
 
   const screenShareParticipant = useScreenShareParticipant();
@@ -167,7 +167,7 @@ export default function MainParticipantInfo({ participant, children }: MainParti
             placement="top"
           >
             <div className={classes.recordingIndicator}>
-              <div className={classes.circle}></div>
+              <div className={classes.circle} />
               <Typography variant="body1" color="inherit" data-cy-recording-indicator>
                 Recording
               </Typography>

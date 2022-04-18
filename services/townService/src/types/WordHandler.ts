@@ -46,7 +46,6 @@ export default class WordHandler {
             }
         }
     }
-  }
 
     /**
      * Sets the target word to a random word in the dictionary

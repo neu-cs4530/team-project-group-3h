@@ -1,12 +1,12 @@
 import { LocalVideoTrack, Room } from 'twilio-video';
 import { useState, useEffect, useCallback } from 'react';
-import { SELECTED_BACKGROUND_SETTINGS_KEY } from '../../../constants';
 import {
   GaussianBlurBackgroundProcessor,
   VirtualBackgroundProcessor,
   ImageFit,
   isSupported,
 } from '@twilio/video-processors';
+import { SELECTED_BACKGROUND_SETTINGS_KEY } from '../../../constants';
 import Abstract from '../../../images/Abstract.jpg';
 import AbstractThumb from '../../../images/thumb/Abstract.jpg';
 import BohoHome from '../../../images/BohoHome.jpg';
@@ -103,10 +103,9 @@ const rawImagePaths = [
   SanFrancisco,
 ];
 
-let imageElements = new Map();
+const imageElements = new Map();
 
-const getImage = (index: number): Promise<HTMLImageElement> => {
-  return new Promise((resolve, reject) => {
+const getImage = (index: number): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
     if (imageElements.has(index)) {
       return resolve(imageElements.get(index));
     }
@@ -118,7 +117,6 @@ const getImage = (index: number): Promise<HTMLImageElement> => {
     img.onerror = reject;
     img.src = rawImagePaths[index];
   });
-};
 
 export const backgroundConfig = {
   imageNames,

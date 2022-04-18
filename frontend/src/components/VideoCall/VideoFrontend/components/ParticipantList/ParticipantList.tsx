@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function ParticipantList() {
   // const classes = useStyles();
   const { room } = useVideoContext();
-  const localParticipant = room!.localParticipant;
+  const {localParticipant} = room!;
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
   const screenShareParticipant = useScreenShareParticipant();
@@ -115,7 +115,7 @@ export default function ParticipantList() {
       <Participant
         participant={localParticipant}
         isLocalParticipant
-        insideGrid={true}
+        insideGrid
                 // highlight={highlightedProfiles?.includes(localUserProfile.id) ?? false}
         slot={0}
       />
@@ -140,7 +140,7 @@ export default function ParticipantList() {
               onClick={() => setSelectedParticipant(participant)}
               hideParticipant={hideParticipant}
               slot={participantWithSlot.slot}
-              insideGrid={true}
+              insideGrid
             />
           );
         })}

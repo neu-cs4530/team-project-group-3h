@@ -1,8 +1,8 @@
 import React from 'react';
-import BackgroundSelectionHeader from './BackgroundSelectionHeader/BackgroundSelectionHeader';
-import BackgroundThumbnail from './BackgroundThumbnail/BackgroundThumbnail';
 import Drawer from '@material-ui/core/Drawer';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import BackgroundSelectionHeader from './BackgroundSelectionHeader/BackgroundSelectionHeader';
+import BackgroundThumbnail from './BackgroundThumbnail/BackgroundThumbnail';
 import { backgroundConfig } from '../VideoProvider/useBackgroundSettings/useBackgroundSettings';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
@@ -24,8 +24,8 @@ function BackgroundSelectionDialog() {
   const classes = useStyles();
   const { isBackgroundSelectionOpen, setIsBackgroundSelectionOpen } = useVideoContext();
 
-  const imageNames = backgroundConfig.imageNames;
-  const images = backgroundConfig.images;
+  const {imageNames} = backgroundConfig;
+  const {images} = backgroundConfig;
 
   return (
     <Drawer
@@ -39,11 +39,11 @@ function BackgroundSelectionDialog() {
     >
       <BackgroundSelectionHeader onClose={() => setIsBackgroundSelectionOpen(false)} />
       <div className={classes.thumbnailContainer}>
-        <BackgroundThumbnail thumbnail={'none'} name={'None'} />
-        <BackgroundThumbnail thumbnail={'blur'} name={'Blur'} />
+        <BackgroundThumbnail thumbnail="none" name="None" />
+        <BackgroundThumbnail thumbnail="blur" name="Blur" />
         {images.map((image, index) => (
           <BackgroundThumbnail
-            thumbnail={'image'}
+            thumbnail="image"
             name={imageNames[index]}
             index={index}
             imagePath={image}

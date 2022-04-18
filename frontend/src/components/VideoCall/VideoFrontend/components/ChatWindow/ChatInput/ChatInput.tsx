@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, CircularProgress, Grid, makeStyles } from '@material-ui/core';
-import TextConversation, { ChatMessage } from '../../../../../../classes/TextConversation';
 import clsx from 'clsx';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import TextConversation, { ChatMessage } from '../../../../../../classes/TextConversation';
 import FileAttachmentIcon from '../../../icons/FileAttachmentIcon';
 import { isMobile } from '../../../utils';
 import SendMessageIcon from '../../../icons/SendMessageIcon';
 import Snackbar from '../../Snackbar/Snackbar';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import useMaybeVideo from '../../../../../../hooks/useMaybeVideo';
 
 const useStyles = makeStyles(theme => ({

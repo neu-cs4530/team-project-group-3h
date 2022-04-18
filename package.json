@@ -6,6 +6,7 @@
     "scripts": {
         "heroku-postbuild": "cd services/townService && npm ci && npm run build",
         "run-services-actions": "heroku local -p 3001 web",
+        "format": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
         "lint": "cd services/townService && npm run-script lint && cd ../../frontend && npm run-script lint"
     },
     "repository": {

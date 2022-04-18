@@ -74,7 +74,7 @@ function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: Aud
         analyser.getByteFrequencyData(sampleArray);
         let values = 0;
 
-        const length = sampleArray.length;
+        const {length} = sampleArray;
         for (let i = 0; i < length; i++) {
           values += sampleArray[i];
         }
@@ -111,7 +111,7 @@ function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: Aud
           rx="6"
           ry="3"
           fill="#23BF6E"
-        ></rect>
+         />
         <path
           fill={color}
           strokeWidth="0"

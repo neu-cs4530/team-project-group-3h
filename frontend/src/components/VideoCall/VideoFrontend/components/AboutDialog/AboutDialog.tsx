@@ -18,7 +18,7 @@ interface AboutDialogProps {
 function AboutDialog({ open, onClose }: PropsWithChildren<AboutDialogProps>) {
   const { roomType } = useAppState();
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth="xs">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>About</DialogTitle>
       <Divider />
       <DialogContent>

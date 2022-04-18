@@ -1,7 +1,7 @@
 import React from 'react';
+import { Participant as IParticipant } from 'twilio-video';
 import ParticipantInfo from '../ParticipantInfo/ParticipantInfo';
 import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
-import { Participant as IParticipant } from 'twilio-video';
 import { UserProfile } from '../../../../../CoveyTypes';
 
 interface ParticipantProps {
