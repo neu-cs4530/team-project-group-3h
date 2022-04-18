@@ -40,15 +40,17 @@ export default class WordleGame implements IGame {
     this.enabled = isSessionStarted;
   }
     
-  addPlayerToTeam(player: Player, teamToJoin: number): void {
+  addPlayerToTeam(player: Player, teamToJoin: number): boolean {
     if (teamToJoin !== 1 && teamToJoin !== 2) {
-      throw new Error('Invalid team');
+      //throw new Error('Invalid team');
+      return false;
     }
     const playerID: string = player.id;
-    if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) throw new Error('Player in both teams');
+    if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) return false;
     if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) this.removePlayer(playerID);
     const teamArray: string[] = (teamToJoin === 1) ? this.redTeam : this.redTeam;
     teamArray.push(player.id); // error vs boolean    
+    return true;
   }
     
 

@@ -5,6 +5,7 @@ import CoveyTownListener from '../types/CoveyTownListener';
 import IGame from '../types/IGame';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
+import WordleGame from '../types/WordleGame';
 import IVideoClient from './IVideoClient';
 import TwilioVideo from './TwilioVideo';
 
@@ -204,7 +205,7 @@ export default class CoveyTownController {
    * @param team 
    * @returns 
    */
-  addPlayerToGameTeam(conversationAreaLabel: String, player: Player, team: number): void {
+  addPlayerToGameTeam(conversationAreaLabel: String, player: Player, team: number): boolean {
     let gameConversationArea = this._conversationAreas.find((conversationArea) => {
       return conversationArea.label == conversationAreaLabel;
     });
@@ -221,7 +222,7 @@ export default class CoveyTownController {
  * @param team 
  * @returns 
  */
-  getGameState(conversationAreaLabel: String, player: Player, team: number): GameState {
+  getGameState(conversationAreaLabel: String): GameState {
     let gameConversationArea = this._conversationAreas.find((conversationArea) => {
       return conversationArea.label == conversationAreaLabel;
     });
@@ -279,12 +280,12 @@ export default class CoveyTownController {
    * @param conversationAreaLabel The label of the conversation area that the game belongs to
    * @returns true if the game is successfully created, or false if not.
    */
-  createGame(game: IGame, conversationAreaLabel: string): boolean {
+  createGame(conversationAreaLabel: string): boolean {
     const conversationArea = this._conversationAreas.find((area) => area.label === conversationAreaLabel);
     if (!conversationArea) {
       return false;
     }
-    conversationArea.gameModel = game;
+    conversationArea.gameModel = new WordleGame();
     return true;
   }
 

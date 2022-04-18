@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import { GameAction, GameState, GameType, UserLocation } from '../CoveyTypes';
 import IGame from '../types/IGame';
+import Player from '../types/Player';
 
 
 export type ServerPlayer = { _id: string, _userName: string, location: UserLocation };
@@ -30,7 +31,7 @@ export type ServerConversationArea = {
  */
 export interface CreateGameRequest {
   coveyTownID: string;
-  coveyUserID: string;
+  sessionToken: string;
   conversationAreaLabel: string;
   gameID: GameType;
 }
@@ -50,7 +51,7 @@ export interface CreateGameResponse {
  */
  export interface UpdateGameRequest {
   coveyTownID: string;
-  coveyUserID: string;
+  sessionToken: string;
   conversationAreaLabel: string;
   gameAction: GameAction;
 }
@@ -67,9 +68,30 @@ export interface CreateGameResponse {
 /**
  * The format for a request to update a game
  */
+ export interface GameJoinTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  //coveyUserID: string;
+  player: Player;
+  teamNumber: number;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
  export interface GetGameStateRequest {
   coveyTownID: string;
-  coveyUserID: string;
+  sessionToken: string;
   conversationAreaLabel: string;
 }
 
@@ -168,16 +190,6 @@ export interface ConversationAreaCreateRequest {
 }
 
 /**
- * Payload sent by the client to create a new game
- */
-export interface GameCreateRequest {
-  coveyTownID: string;
-  sessionToken: string;
-  conversationAreaLabel: string;
-  game: IGame;
-}
-
-/**
  * Envelope that wraps any response from the server
  */
 export interface ResponseEnvelope<T> {
@@ -248,7 +260,7 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  async createGame(requestData: GameCreateRequest) : Promise<void>{
+  async createGame(requestData: CreateGameRequest ) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }

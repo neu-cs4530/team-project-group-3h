@@ -4,7 +4,10 @@ import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import {
   conversationAreaCreateHandler,
+  gameAddPlayerHandler,
   gameCreateHandler,
+  gameInputActionHandler,
+  gameStateHandler,
   townCreateHandler, townDeleteHandler,
   townJoinHandler,
   townListHandler,
@@ -128,6 +131,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         });
     }
   });
+
   /**
    * Create a game
    */
@@ -137,7 +141,73 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         coveyTownID: req.params.townID,
         sessionToken: req.body.sessionToken,
         conversationAreaLabel: req.body.conversationAreaLabel,
-        game: req.body.game,
+        gameID: "wordle",
+      });
+      res.status(StatusCodes.OK)
+        .json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message: 'Internal server error, please see log in server for more details',
+        });
+    }
+  });
+
+    /**
+   * updates a game
+   */
+     app.post('/towns/:townID/updategame', express.json(), async (req, res) => {
+      try {
+        const result = gameInputActionHandler({
+          coveyTownID: req.params.townID,
+          sessionToken: req.body.sessionToken,
+          conversationAreaLabel: req.body.conversationAreaLabel,
+          gameAction: req.body.gameAction,
+        });
+        res.status(StatusCodes.OK)
+          .json(result);
+      } catch (err) {
+        logError(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({
+            message: 'Internal server error, please see log in server for more details',
+          });
+      }
+    });
+
+  /**
+   * gets the gameState
+   */
+    app.post('/towns/:townID/gamestate', express.json(), async (req, res) => {
+    try {
+      const result = gameStateHandler({
+        coveyTownID: req.params.townID,
+        sessionToken: req.body.sessionToken,
+        conversationAreaLabel: req.body.conversationAreaLabel
+      });
+      res.status(StatusCodes.OK)
+        .json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message: 'Internal server error, please see log in server for more details',
+        });
+    }
+  });
+
+  /**
+ * gets the gameState
+ */
+    app.post('/towns/:townID/joingameteam', express.json(), async (req, res) => {
+    try {
+      const result = gameAddPlayerHandler({
+        coveyTownID: req.params.townID,
+        sessionToken: req.body.sessionToken,
+        player: req.body.Player,
+        teamNumber: req.body.teamNumber,
+        conversationAreaLabel: req.body.conversationAreaLabel
       });
       res.status(StatusCodes.OK)
         .json(result);
