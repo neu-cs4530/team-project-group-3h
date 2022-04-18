@@ -213,6 +213,8 @@ export default class CoveyTownController {
     if(gameConversationArea) {
       return gameConversationArea.gameModel.addPlayerToTeam(player, team);
     }
+
+    return false;
   }
 
   /**
