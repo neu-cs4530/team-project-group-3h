@@ -64,8 +64,7 @@ export default function usePasscodeAuth() {
   const [isAuthReady, setIsAuthReady] = useState(false);
 
   const getToken = useCallback(
-    (name: string, room: string) => {
-      return fetchToken(name, room, user!.passcode)
+    (name: string, room: string) => fetchToken(name, room, user!.passcode)
         .then(async res => {
           if (res.ok) {
             return res;
@@ -74,14 +73,12 @@ export default function usePasscodeAuth() {
           const errorMessage = getErrorMessage(json.error?.message || res.statusText);
           throw Error(errorMessage);
         })
-        .then(res => res.json());
-    },
+        .then(res => res.json()),
     [user]
   );
 
   const updateRecordingRules = useCallback(
-    async (room_sid, rules) => {
-      return fetch('/recordingrules', {
+    async (room_sid, rules) => fetch('/recordingrules', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -98,8 +95,7 @@ export default function usePasscodeAuth() {
         }
 
         return jsonResponse;
-      });
-    },
+      }),
     [user]
   );
 
@@ -121,16 +117,14 @@ export default function usePasscodeAuth() {
     }
   }, [history]);
 
-  const signIn = useCallback((passcode: string) => {
-    return verifyPasscode(passcode).then(verification => {
+  const signIn = useCallback((passcode: string) => verifyPasscode(passcode).then(verification => {
       if (verification?.isValid) {
         setUser({ passcode } as any);
         window.sessionStorage.setItem('passcode', passcode);
       } else {
         throw new Error(getErrorMessage(verification?.error));
       }
-    });
-  }, []);
+    }), []);
 
   const signOut = useCallback(() => {
     setUser(null);

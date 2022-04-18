@@ -2,12 +2,6 @@ import { GameAction, GameState } from '../CoveyTypes';
 import type Player from './Player';
 
 export default interface IGame {
-
-  /**
-    * Returns the title of the game
-    */
-  getTitle(): string;
-
   /**
      * Activates/Deactivates a Game Session
      * @param isSessionStarted 
@@ -42,5 +36,5 @@ export default interface IGame {
   /**
      * Returns the Game State
      */
-    getState(): GameState;
+  getState(): GameState;
 }

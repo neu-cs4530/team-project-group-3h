@@ -18,7 +18,7 @@ export type ChatMessage = {
 export type GameAction = {
   actionString: string;
   playerID: string;
-  //team: number;
+  // team: number;
 };
 
 export type GameState = {

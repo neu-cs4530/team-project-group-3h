@@ -1,7 +1,7 @@
 import React from 'react';
-import FileDownloadIcon from '../../../../icons/FileDownloadIcon';
 import { makeStyles } from '@material-ui/core/styles';
 import { Media } from '@twilio/conversations/lib/media';
+import FileDownloadIcon from '../../../../icons/FileDownloadIcon';
 
 const useStyles = makeStyles({
   messageContainer: {
@@ -43,7 +43,7 @@ interface MediaMessageProps {
 
 export function formatFileSize(bytes: number, suffixIndex = 0): string {
   const suffixes = ['bytes', 'KB', 'MB', 'GB'];
-  if (bytes < 1000) return +bytes.toFixed(2) + ' ' + suffixes[suffixIndex];
+  if (bytes < 1000) return `${+bytes.toFixed(2)  } ${  suffixes[suffixIndex]}`;
   return formatFileSize(bytes / 1024, suffixIndex + 1);
 }
 

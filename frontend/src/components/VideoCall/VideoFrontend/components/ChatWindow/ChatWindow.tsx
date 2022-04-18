@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import ChatWindowHeader from './ChatWindowHeader/ChatWindowHeader';
 import ChatInput from './ChatInput/ChatInput';
-import clsx from 'clsx';
 import MessageList from './MessageList/MessageList';
 import useChatContext from '../../hooks/useChatContext/useChatContext';
 
