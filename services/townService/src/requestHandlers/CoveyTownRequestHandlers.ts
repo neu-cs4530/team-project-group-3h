@@ -4,7 +4,7 @@ import Player from '../types/Player';
 import { ChatMessage, CoveyTownList, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { ConversationAreaCreateRequest, GameCreateRequest, GameJoinTeamRequest, GetGameStateRequest, ServerConversationArea, UpdateGameRequest } from '../client/TownsServiceClient';
+import { ConversationAreaCreateRequest, CreateGameRequest, GameJoinTeamRequest, GetGameStateRequest, ServerConversationArea, UpdateGameRequest } from '../client/TownsServiceClient';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -206,7 +206,7 @@ export function conversationAreaCreateHandler(_requestData: ConversationAreaCrea
  * * Ask the TownController to create the game
  * @param _requestData Game create request
  */
-export function gameCreateHandler(_requestData: GameCreateRequest) : ResponseEnvelope<Record<string, null>> {
+export function gameCreateHandler(_requestData: CreateGameRequest) : ResponseEnvelope<Record<string, null>> {
   const townsStore = CoveyTownsStore.getInstance();
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
   if (!townController?.getSessionByToken(_requestData.sessionToken)){
