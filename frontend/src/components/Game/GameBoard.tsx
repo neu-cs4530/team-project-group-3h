@@ -1,5 +1,7 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import useGameState from '../../hooks/useGameState';
+import usePlayersInTown from '../../hooks/usePlayersInTown';
 
 type GuessInformation = {
   guessArray: string[],
@@ -86,59 +88,56 @@ function AllRows(props: AllRowsProps) : JSX.Element {
 /**
  * Should show the game board and its current state to both spectators and game players. Should also show a Wordle title bar,
  * the player's state, and an input tab for players to input guesses when it is their team's turn.
- * 
- * IN PROGRESS
- *
  */
 export default function GameBoard(props: GameBoardProps): JSX.Element {
+  const players = usePlayersInTown();
+  const {playerID, gameState} = useGameState();
+  const myPlayer = players.find((player) => player.id === playerID);
   const {gameover} = props;
-  const [team, setTeam] = useState('none');
-  const [turn, setTurn] = useState('red');
-  const [input, setInput] = useState('');
 
-  const redGuesses : GuessInformation[] = [{guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
-  const blueGuesses : GuessInformation[] = [{guessArray: ['t', 'r', 'a', 'c', 'e'], letterColors: [0, 0, 1, 0, 0]}, {guessArray: ['h', 'e', 'l', 'l', 'o'], letterColors: [-1, 0, -1, 0, 0]}];
-  
-  const yourTeamHeader = (team === 'none') ? 'You are Spectating!' : `You are ${  team  }!`;
-  const turnHeader = ((team === turn) && (team !== 'none')) ? 'Its your turn - enter guess below!' : 'Please wait your turn';
-  const displayText = (gameover) ? 'Game Over' : `${yourTeamHeader  } ${  turnHeader}`
+  if (gameState && myPlayer) {
+    const redTeam = gameState.getState().teamOneState.teamMembers.includes(playerID);
+    const blueTeam = gameState.getState().teamTwoState.teamMembers.includes(playerID);
+    const redGuesses = gameState.getState().teamOneState.guesses;
+    const blueGuesses = gameState.getState().teamTwoState.guesses;
+    const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
+    const displayText = (gameover) ? 'Game Over' : yourTeamHeader;
+    const [input, setInput] = useState('');
 
-  const redRows = redGuesses.map((guess, index) => 
-  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={(team !== 'blue') || gameover}/>);
+    const redRows = redGuesses.map((guess, index) => 
+    <WordleRow key={index.toString()} guessArray={Array.from(guess)} letterColors={[0, 0, 0, 0, 0]} showLetters={(!blueTeam) || gameover}/>);
+    const blueRows = blueGuesses.map((guess, index) => 
+    <WordleRow key={index.toString()} guessArray={Array.from(guess)} letterColors={[0, 0, 0, 0, 0]} showLetters={(!redTeam) || gameover}/>);
+    const redBoard = <AllRows guessRows={redRows}/>;
+    const blueBoard = <AllRows guessRows={blueRows}/>;
 
-  const blueRows = blueGuesses.map((guess, index) => 
-  <WordleRow key={index.toString()} guessArray={guess.guessArray} letterColors={guess.letterColors} showLetters={(team !== 'red') || gameover}/>);
+    return (
+      <VStack padding={4} align='center'>
+        <Text fontSize='xl'>Wordle</Text>
+        <HStack spacing='24px'>
+          <VStack>
+            <Text fontSize='sm'>Red Board</Text>
+            {redBoard}
+          </VStack>
+          <VStack>
+            <Text fontSize='sm'>Blue Board</Text>
+            {blueBoard}
+          </VStack>
+        </HStack>
+        <Text fontSize='lg'>{displayText}</Text>
+        <Input 
+          size='sm'
+          value={input} 
+          onChange={(e)=> setInput(e.currentTarget.value)}
+          onKeyPress={e=> {
+            if (e.key === 'Enter') {
+               gameState.inputAction({actionString: input, playerID : playerID, team : (redTeam) ? 1 : 2})
+            }
+         }} 
+          isDisabled={(!redTeam && !blueTeam)} />
+      </VStack>
+    );
+  }
 
-  const redBoard = <AllRows guessRows={redRows}/>;
-  const blueBoard = <AllRows guessRows={blueRows}/>;
-
-  return (
-    <VStack padding={4} align='center'>
-      <Text fontSize='xl'>Wordle</Text>
-      <HStack spacing='24px'>
-        <VStack>
-          <Text fontSize='sm'>Red Teams Board</Text>
-          {redBoard}
-        </VStack>
-        <VStack>
-          <Text fontSize='sm'>Blue Teams Board</Text>
-          {blueBoard}
-        </VStack>
-      </HStack>
-      <Text fontSize='lg'>{displayText}</Text>
-      <Input 
-        size='sm'
-        value={input} 
-        onChange={(e)=> setInput(e.currentTarget.value)} 
-        onKeyPress={e=> {
-          if (e.key === 'Enter' && turn === 'red') {
-            setTurn('blue');
-          }
-          if (e.key === 'Enter' && turn === 'blue') {
-            setTurn('red');
-          }
-        }}
-        isDisabled={(turn !== team) || (team === 'none')} />
-    </VStack>
-  );
+  return <></>;
 }
