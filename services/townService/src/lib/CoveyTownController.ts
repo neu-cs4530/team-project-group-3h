@@ -212,6 +212,16 @@ export default class CoveyTownController {
     return false;
   }
 
+  removePlayerFromGameTeam(conversationAreaLabel: String, playerID: string, team: number): void {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      gameConversationArea.gameModel.removePlayer(playerID);
+    }
+  }
+
   /**
  * TODO
  * @param conversationAreaLabel 
