@@ -13,7 +13,7 @@ export default interface IGame {
      * @param player 
      * @param teamToJoin 
      */
-  addPlayerToTeam(player: Player, teamToJoin: number): void;
+  addPlayerToTeam(player: Player, teamToJoin: number): boolean;
 
   /**
      * Removes a player from the Game
