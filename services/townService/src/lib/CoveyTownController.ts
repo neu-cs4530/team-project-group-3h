@@ -1,10 +1,11 @@
 import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea } from '../client/TownsServiceClient';
-import { ChatMessage, UserLocation } from '../CoveyTypes';
+import { ChatMessage, GameAction, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import IGame from '../types/IGame';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
+import WordleGame from '../types/WordleGame';
 import IVideoClient from './IVideoClient';
 import TwilioVideo from './TwilioVideo';
 
@@ -168,11 +169,75 @@ export default class CoveyTownController {
    */
   removePlayerFromConversationArea(player: Player, conversation: ServerConversationArea) : void {
     conversation.occupantsByID.splice(conversation.occupantsByID.findIndex(p=>p === player.id), 1);
+    if(conversation.gameModel != undefined) {
+      conversation.gameModel.removePlayer(player.id);
+    }
     if (conversation.occupantsByID.length === 0) {
       this._conversationAreas.splice(this._conversationAreas.findIndex(conv => conv === conversation), 1);
       this._listeners.forEach(listener => listener.onConversationAreaDestroyed(conversation));
     } else {
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversation));
+    }
+  }
+
+  /**
+   * TODO
+   * @param conversationAreaLabel T
+   * @param action 
+   * @returns 
+   */
+  inputGameAction(conversationAreaLabel: String, action: GameAction): boolean {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.inputAction(action);
+    }
+
+    return false;
+  }
+
+  /**
+   * TODO
+   * @param conversationAreaLabel 
+   * @param player 
+   * @param team 
+   * @returns 
+   */
+  addPlayerToGameTeam(conversationAreaLabel: String, player: Player, team: number): boolean {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.addPlayerToTeam(player, team);
+    }
+
+    return false;
+  }
+
+  /**
+ * TODO
+ * @param conversationAreaLabel 
+ * @param player 
+ * @param team 
+ * @returns 
+ */
+  getGameState(conversationAreaLabel: String): GameState {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.getState();
+    }
+
+    return {
+      teamOneState: undefined,
+      teamTwoState: undefined,
+      winner: "none",
+      isActive: false
     }
   }
 
@@ -217,12 +282,12 @@ export default class CoveyTownController {
    * @param conversationAreaLabel The label of the conversation area that the game belongs to
    * @returns true if the game is successfully created, or false if not.
    */
-  createGame(game: IGame, conversationAreaLabel: string): boolean {
+  createGame(conversationAreaLabel: string): boolean {
     const conversationArea = this._conversationAreas.find((area) => area.label === conversationAreaLabel);
     if (!conversationArea) {
       return false;
     }
-    conversationArea.gameModel = game;
+    conversationArea.gameModel = new WordleGame();
     return true;
   }
 

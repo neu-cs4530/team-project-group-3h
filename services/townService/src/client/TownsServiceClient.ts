@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
-import { UserLocation } from '../CoveyTypes';
-import type IGame from '../types/IGame';
+import { GameAction, GameState, GameType, UserLocation } from '../CoveyTypes';
+import IGame from '../types/IGame';
+import Player from '../types/Player';
 
 
 export type ServerPlayer = { _id: string, _userName: string, location: UserLocation };
@@ -16,6 +17,7 @@ export type BoundingBox = {
   width: number,
   height: number
 };
+
 export type ServerConversationArea = {
   label: string;
   topic: string;
@@ -23,6 +25,84 @@ export type ServerConversationArea = {
   boundingBox: BoundingBox;
   gameModel: IGame;
 };
+
+/**
+ * The format for a request to create a game
+ */
+export interface CreateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameID: GameType;
+}
+
+/**
+ * The format for a request to create a game
+ */
+export interface CreateGameResponse {
+  coveyTownID: string;
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface UpdateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameAction: GameAction;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface UpdateGameResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  //coveyUserID: string;
+  player: Player;
+  teamNumber: number;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GetGameStateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GetGameStateResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -110,16 +190,6 @@ export interface ConversationAreaCreateRequest {
 }
 
 /**
- * Payload sent by the client to create a new game
- */
-export interface GameCreateRequest {
-  coveyTownID: string;
-  sessionToken: string;
-  conversationAreaLabel: string;
-  game: IGame;
-}
-
-/**
  * Envelope that wraps any response from the server
  */
 export interface ResponseEnvelope<T> {
@@ -190,7 +260,7 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  async createGame(requestData: GameCreateRequest) : Promise<void>{
+  async createGame(requestData: CreateGameRequest ) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
