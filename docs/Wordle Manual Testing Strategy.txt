@@ -1,0 +1,40 @@
+Frontend manual testing:
+These assertions can be verified by using two players to manipulate the state of a conversation and it's game
+
+General game window assertions:
+- No game window displayed while outside a conversation
+- No game window displayed while inside a conversation that isn't activated
+- Upon activating a conversation, displays Select Game window
+- Upon entering and while inside an active conversation, displays game window corresponding to the current conversation's game state
+- Upon exiting an active conversation, no game window displayed
+- Upon selecting a game, updates conversation's game state
+- When the game state changes, the game window is updated for all players in the conversation
+
+Wordle game window assertions:
+- Upon pressing the Wordle button on the Select Game window, game state becomes the Wordle Lobby
+- While in the lobby and the player is not on a team:
+	- Displays two buttons Join Red and Join Blue
+	- Upon pressing the Join Red button on the Wordle Lobby window, the player is added to the Red team
+	- Upon pressing the Join Blue button on the Wordle Lobby window, the player is added to the Blue team
+- While the player is on the Red team in the Lobby:
+	- Displays two buttons Leave Red and Join Blue
+	- Upon pressing the Leave Red button on the Wordle Lobby window, the player is removed from the Red team
+	- Upon pressing the Join Blue button on the Wordle Lobby window, the player is removed from the Red team and added to the Blue team
+- While the player is on the Blue team in the Lobby:
+	- Displays two buttons Leave Blue and Join Red
+	- Upon pressing the Leave Blue button on the Wordle Lobby window, the player is removed from the Blue team
+	- Upon pressing the Join Red button on the Wordle Lobby window, the player is removed from the Blue team and added to the Red team
+- While in the lobby, displays Start button
+- When any occupant presses Start, game state becomes Wordle Play Game
+- Wordle Play Game window displays two game boards: 5x6 tiles
+- While in Play Game:
+	- If the player is on Red team, displays guesses and results for Red and only results for Blue
+	- If the player is on Blue team, displays guesses and results for Blue and only results for Red
+	- If the player is Spectating (no team), displays guesses and results for both teams
+	- If the player is on Red or Blue team, displays a text box for entering guesses
+	- Spectators are not able to enter a guess
+	- When any player enters a valid guess, updates the game state for the corresponding team
+- When the game state indicates the game is over, displays Game Over window
+- Game Over window displays the full state of both boards
+- Game Over window displays New Game button
+- When any occupant presses New Game, updates game state and displays Select Game window
