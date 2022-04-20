@@ -73,7 +73,7 @@ export default class WordleGame implements IGame {
       const playerGuess: Guess = { word: action.actionString, guessResult: guessArray };
       teamToAddGuessTo.push(playerGuess);
       return true;
-    } catch (e: any) {
+    } catch (error) {
       return false;
     }
   }
