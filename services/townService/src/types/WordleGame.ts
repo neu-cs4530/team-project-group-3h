@@ -81,11 +81,11 @@ export default class WordleGame implements IGame {
   getState(): GameState {
     const blueTeamState: TeamState = {
       teamMembers: this.blueTeam.map((player) => player),
-      guesses: this.blueGuesses.map((guess) => guess.word),
+      guesses: this.blueGuesses.map((guess) => guess),
     };
     const redTeamState: TeamState = {
       teamMembers: this.redTeam.map((player) => player),
-      guesses: this.redGuesses.map((guess) => guess.word),
+      guesses: this.redGuesses.map((guess) => guess),
     };
     const gameState: GameState = {
       teamOneState: blueTeamState,
