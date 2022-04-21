@@ -82,8 +82,17 @@ export interface GameJoinTeamRequest {
  */
 export interface GameJoinTeamResponse {
   conversationAreaLabel: string;
-  gameState: GameState;
   success: boolean;
+}
+
+/**
+ * The format for a request to remove a player from the game
+ */
+ export interface GameLeaveTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  playerID: string;
+  conversationAreaLabel: string;
 }
 
 /**

@@ -151,9 +151,30 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
   
-  async createConversation(requestData: ConversationCreateRequest) : Promise<void>{
+  async createGame(requestData: ConversationCreateRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
+
+  async addPlayerToGameTeam(requestData: ConversationCreateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async removePlayerFromGameTeam(requestData: ConversationCreateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async getGameState(requestData: ConversationCreateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async inputGameAction(requestData: ConversationCreateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
 
 }
