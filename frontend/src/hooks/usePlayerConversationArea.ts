@@ -1,24 +1,19 @@
 import { useState, useEffect } from "react";
 import ConversationArea from "../classes/ConversationArea";
-import { GameState } from "../classes/GameTypes";
-import IGame from "../classes/IGame";
 import { ServerPlayer } from "../classes/Player";
 import useConversationAreas from "./useConversationAreas";
 import useCoveyAppState from "./useCoveyAppState";
 import usePlayerMovement from "./usePlayerMovement";
 
-export type GameInformation = {
-    playerID: string,
-    gameConversationArea: ConversationArea | undefined,
-    gameState: IGame | undefined
-}
-
-export default function useGameState() : GameInformation {
+/**
+ * Returns the conversation area your player is in, or undefined if they are not in one. Listens for player movement events and updates the
+ * conversation area accordingly.
+ * @returns The conversation area the player is in, or undefined if it is not inside one.
+ */
+export default function usePlayerConversationArea() : ConversationArea | undefined {
     const [playerID] = useState(useCoveyAppState().myPlayerID);
     const conversationAreas = useConversationAreas();
     const [currentConversationArea, setCurrentConversationArea] = useState<ConversationArea | undefined>(undefined);
-    const [currentGame, setCurrentGame] = useState<IGame | undefined>(undefined);
-    const [currentPhase, setCurrentPhase] = useState<string | undefined>(undefined);
     const playerMovementCallbacks = usePlayerMovement();
 
     // listens for player movement events. If the player has moved convos, update currentConversationArea
@@ -34,28 +29,5 @@ export default function useGameState() : GameInformation {
         };
     }, [playerMovementCallbacks, conversationAreas, currentConversationArea?.label, playerID]);
 
-
-    // if currentGame's state has changed, rerender
-    useEffect(() => {
-    }, [currentPhase]);
-
-    // if currentGame has changed, rerender
-    useEffect(() => {
-        if(!currentConversationArea) {
-            setCurrentPhase(undefined);
-        }
-        if (!currentGame) {
-            setCurrentPhase('list');
-        }
-        else {
-            setCurrentPhase('lobby');
-        }
-    }, [currentGame, currentConversationArea]);
-
-    // if currentConversationArea has changed, set currentGame
-    useEffect(() => {
-        setCurrentGame(currentConversationArea?.game);
-    }, [currentConversationArea]);
-
-    return {playerID : playerID, gameConversationArea : currentConversationArea, gameState : currentGame};
+    return currentConversationArea;
 }

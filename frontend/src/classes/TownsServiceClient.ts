@@ -1,7 +1,87 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
-import { ServerPlayer } from './Player';
+import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
+import { GameState, GameAction, GameType } from './GameTypes';
+
+
+/**
+ * The format for a request to create a game
+ */
+ export interface CreateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameID: GameType;
+}
+
+/**
+ * The format for a request to create a game
+ */
+export interface CreateGameResponse {
+  coveyTownID: string;
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface UpdateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameAction: GameAction;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface UpdateGameResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  // coveyUserID: string;
+  player: Player;
+  teamNumber: number;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GetGameStateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GetGameStateResponse {
+  conversationAreaLabel: string;
+  gameState: GameState;
+  success: boolean;
+}
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -156,4 +236,8 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
+  async createGame(requestData: CreateGameRequest ) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
 }

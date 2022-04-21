@@ -264,5 +264,4 @@ export default class TownsServiceClient {
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
-
 }

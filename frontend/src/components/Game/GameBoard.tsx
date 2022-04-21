@@ -1,12 +1,7 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import useGameState from '../../hooks/useGameState';
-import usePlayersInTown from '../../hooks/usePlayersInTown';
-
-type GuessInformation = {
-  guessArray: string[],
-  letterColors: number[] 
-}
+import useCoveyAppState from '../../hooks/useCoveyAppState';
+import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 
 type WordleRowProps = {
   guessArray: string[],
@@ -20,7 +15,7 @@ type WordleLetterProps = {
 }
 
 type AllRowsProps = {
-  guessRows: JSX.Element[]
+  guessRows: JSX.Element[] | undefined
 }
 
 type GameBoardProps = {
@@ -78,8 +73,10 @@ function AllRows(props: AllRowsProps) : JSX.Element {
   const {guessRows} = props;
   const allRows = [];
 
-  for(let i = 0; i < 6; i += 1) {
-    allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow/>);
+  if (guessRows) {
+    for(let i = 0; i < 6; i += 1) {
+      allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow/>);
+    }
   }
 
   return <VStack>{allRows}</VStack>
@@ -90,24 +87,26 @@ function AllRows(props: AllRowsProps) : JSX.Element {
  * the player's state, and an input tab for players to input guesses when it is their team's turn.
  */
 export default function GameBoard(props: GameBoardProps): JSX.Element {
-  const players = usePlayersInTown();
-  const {playerID, gameState} = useGameState();
-  const myPlayer = players.find((player) => player.id === playerID);
+  const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
   const {gameover} = props;
+  const [playerID] = useState(useCoveyAppState().myPlayerID);
+  const currentConversationArea = usePlayerConversationArea();
+  const [input, setInput] = useState('');
 
-  if (gameState && myPlayer) {
-    const redTeam = gameState.getState().teamOneState.teamMembers.includes(playerID);
-    const blueTeam = gameState.getState().teamTwoState.teamMembers.includes(playerID);
-    const redGuesses = gameState.getState().teamOneState.guesses;
-    const blueGuesses = gameState.getState().teamTwoState.guesses;
+  // ensure the game session is active, then display the game board
+  if (currentConversationArea?.game) {
+    const activeGame = currentConversationArea.game;
+    const redTeam = activeGame.getState().teamOneState?.teamMembers.includes(playerID);
+    const blueTeam = activeGame.getState().teamTwoState?.teamMembers.includes(playerID);
+    const redGuesses = activeGame.getState().teamOneState?.guesses;
+    const blueGuesses = activeGame.getState().teamTwoState?.guesses;
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const displayText = (gameover) ? 'Game Over' : yourTeamHeader;
-    const [input, setInput] = useState('');
 
-    const redRows = redGuesses.map((guess, index) => 
-    <WordleRow key={index.toString()} guessArray={Array.from(guess)} letterColors={[0, 0, 0, 0, 0]} showLetters={(!blueTeam) || gameover}/>);
-    const blueRows = blueGuesses.map((guess, index) => 
-    <WordleRow key={index.toString()} guessArray={Array.from(guess)} letterColors={[0, 0, 0, 0, 0]} showLetters={(!redTeam) || gameover}/>);
+    const redRows = redGuesses?.map((guess, index) => 
+    <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover}/>);
+    const blueRows = blueGuesses?.map((guess, index) => 
+    <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!redTeam) || gameover}/>);
     const redBoard = <AllRows guessRows={redRows}/>;
     const blueBoard = <AllRows guessRows={blueRows}/>;
 
@@ -131,7 +130,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
           onChange={(e)=> setInput(e.currentTarget.value)}
           onKeyPress={e=> {
             if (e.key === 'Enter') {
-               gameState.inputAction({actionString: input, playerID : playerID, team : (redTeam) ? 1 : 2})
+               // apiClient.inputAction();
             }
          }} 
           isDisabled={(!redTeam && !blueTeam)} />
