@@ -36,27 +36,30 @@ export default class WordleGame implements IGame {
   }
 
   setSessionActive(isSessionStarted: boolean): void {
-    // throw new Error("Method not implemented.");
     this.enabled = isSessionStarted;
   }
     
   addPlayerToTeam(player: Player, teamToJoin: number): boolean {
-    if (teamToJoin !== 1 && teamToJoin !== 2) {
-      //throw new Error('Invalid team');
-      return false;
-    }
+    // 1 maps to red team, 2 to blue
+    if (teamToJoin !== 1 && teamToJoin !== 2) return false;
+    if (!this.enabled) return false; 
+
     const playerID: string = player.id;
     if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) return false;
-    if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) this.removePlayer(playerID);
-    const teamArray: string[] = (teamToJoin === 1) ? this.redTeam : this.redTeam;
+    if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) {
+      this.removePlayer(playerID);
+    }
+    const teamArray: string[] = (teamToJoin === 1) ? this.redTeam : this.blueTeam;
     teamArray.push(player.id); // error vs boolean    
     return true;
   }
     
 
-  removePlayer(playerID: string): void {
-    this.blueTeam.filter((player) => player !== playerID);
-    this.redTeam.filter((player) => player !== playerID);
+  removePlayer(playerID: string): boolean {
+    if (!this.enabled) return false;
+    this.blueTeam = this.blueTeam.filter((player) => player.localeCompare(playerID) !== 0);
+    this.redTeam = this.redTeam.filter((player) => player.localeCompare(playerID) !== 0);
+    return true;
   }
     
   gameActive(isGameStarted: boolean): void {
@@ -66,6 +69,7 @@ export default class WordleGame implements IGame {
   inputAction(action: GameAction): boolean {
     if (this.redTeam.indexOf(action.playerID) === -1 && this.blueTeam.indexOf(action.playerID) === -1) return false;
     if (this.redTeam.indexOf(action.playerID) !== -1 && this.blueTeam.indexOf(action.playerID) !== -1) return false;
+    if (!this.active) return false;
 
     try {
       const teamToAddGuessTo: Guess[] = (this.blueTeam.indexOf(action.playerID) !== -1) ? this.blueGuesses : this.redGuesses;
@@ -88,8 +92,8 @@ export default class WordleGame implements IGame {
       guesses: this.redGuesses.map((guess) => guess),
     };
     const gameState: GameState = {
-      teamOneState: blueTeamState,
-      teamTwoState: redTeamState,
+      teamOneState: redTeamState,
+      teamTwoState: blueTeamState,
       winner: this.winner ? this.winner : ' ',
       isActive: this.active,
     };

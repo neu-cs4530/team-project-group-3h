@@ -19,7 +19,7 @@ export default interface IGame {
      * Removes a player from the Game
      * @param playerID 
      */
-  removePlayer(playerID: string): void;
+  removePlayer(playerID: string): boolean;
 
   /**
      * Starts or stops the game
