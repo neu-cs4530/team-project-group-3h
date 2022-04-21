@@ -1,4 +1,4 @@
-import { GameAction, GameState, Guess, TeamState, UserLocation } from '../CoveyTypes';
+import { GameAction, GameState, Guess, TeamState } from '../CoveyTypes';
 import Player from './Player';
 import WordleGame from './WordleGame';
 
@@ -69,23 +69,23 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
   it('should have inputAction return false if the game is not active yet', () => {
     model.gameActive(false);
     model.addPlayerToTeam(player, 1);
-    const guess: GameAction = {actionString: 'court', playerID: player.id};
+    const guess: GameAction = { actionString: 'court', playerID: player.id };
     expect(model.inputAction(guess)).toBe(false);
     model.gameActive(true);
     expect(model.inputAction(guess)).toBe(true);
   });
 
   it('should return false if player guessing isnt on a team', () => {
-    const invalidPlayerGuess: GameAction = {actionString: 'court', playerID: player.id};
+    const invalidPlayerGuess: GameAction = { actionString: 'court', playerID: player.id };
     expect(model.inputAction(invalidPlayerGuess)).toBe(false);
   });
 
   it('should return false if invalid guess', () => {
     model.addPlayerToTeam(player, 1);
-    const shortGuess: GameAction = {actionString: 'hi', playerID: player.id};
-    const longGuess: GameAction = {actionString: 'supreme', playerID: player.id};
-    const invalidWordGuess: GameAction = {actionString: 'abcde', playerID: player.id};
-    const validGuess: GameAction = {actionString: 'hello', playerID: player.id};
+    const shortGuess: GameAction = { actionString: 'hi', playerID: player.id };
+    const longGuess: GameAction = { actionString: 'supreme', playerID: player.id };
+    const invalidWordGuess: GameAction = { actionString: 'abcde', playerID: player.id };
+    const validGuess: GameAction = { actionString: 'hello', playerID: player.id };
     expect(model.inputAction(shortGuess)).toBe(false);
     expect(model.inputAction(longGuess)).toBe(false);
     expect(model.inputAction(invalidWordGuess)).toBe(false);
@@ -101,7 +101,7 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
       expect(modelState.teamOneState.guesses.length).toBe(0);
       expect(modelState.teamTwoState.guesses.length).toBe(0);
     }
-    const validGuess: GameAction = {actionString: 'hello', playerID: player.id};
+    const validGuess: GameAction = { actionString: 'hello', playerID: player.id };
     model.inputAction(validGuess);
     modelState = model.getState();
     if (modelState.teamOneState && modelState.teamTwoState) {
@@ -133,7 +133,7 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
     const player2: Player = new Player('Another test player');
     model.addPlayerToTeam(player2, 2);
     validGuess.playerID = player2.id;
-    validGuess.actionString = "stave";
+    validGuess.actionString = 'stave';
     model.inputAction(validGuess);
     modelState = model.getState();
     if (modelState.teamOneState && modelState.teamTwoState) {
@@ -155,9 +155,9 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
 
   it('should return the correct game state', () => {
     const player2: Player = new Player('Another test player');
-    let redTeamState: TeamState = {teamMembers: [],guesses: [],};
-    let blueTeamState: TeamState = {teamMembers: [],guesses: [],};
-    let currentGameState: GameState = {
+    const redTeamState: TeamState = { teamMembers: [], guesses: [] };
+    const blueTeamState: TeamState = { teamMembers: [], guesses: [] };
+    const currentGameState: GameState = {
       teamOneState: redTeamState,
       teamTwoState: blueTeamState, 
       winner: ' ',
@@ -177,9 +177,9 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
     redTeamState.teamMembers.pop();
     expect(model.getState()).toStrictEqual(currentGameState);
     model.gameActive(true);
-    const validGuess: GameAction = {actionString: 'nymph', playerID: player2.id};
+    const validGuess: GameAction = { actionString: 'nymph', playerID: player2.id };
     model.inputAction(validGuess);
-    let modelState = model.getState();
+    const modelState = model.getState();
     if (modelState.teamOneState && modelState.teamTwoState) {
       const team1Guesses: Guess[] = modelState.teamOneState.guesses; 
       const team2Guesses: Guess[] = modelState.teamTwoState.guesses; 
@@ -188,5 +188,5 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
       expect(team2Guesses[0].word).toStrictEqual('nymph');
     }
 
-  })
+  });
 });
