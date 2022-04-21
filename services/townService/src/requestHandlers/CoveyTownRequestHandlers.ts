@@ -234,19 +234,19 @@ export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEn
   }
   const result = townController.getGameState(_requestData.conversationAreaLabel);
 
-  if(result.teamOneState === undefined) {
+  if (result.teamOneState === undefined) {
     return {
       isOK: false,
       response: {},
-      message: `unable to get game state for ${_requestData.conversationAreaLabel}`
+      message: `unable to get game state for ${_requestData.conversationAreaLabel}`,
     };
-  } else {
-    return {
-      isOK: true,
-      response: {state: result},
-      message: `successfully retrieved game state for ${_requestData.conversationAreaLabel}`
-    }
-  }
+  } 
+  return {
+    isOK: true,
+    response: { state: result },
+    message: `successfully retrieved game state for ${_requestData.conversationAreaLabel}`,
+  };
+  
 }
 
 export function gameInputActionHandler(_requestData: UpdateGameRequest) : ResponseEnvelope<Record<string, null>> {
