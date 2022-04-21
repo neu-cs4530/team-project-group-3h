@@ -12,7 +12,7 @@ export default function WordleLobby(): JSX.Element {
   // const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
-  console.log(currentConversationArea?.game);
+  console.log(currentConversationArea);
 
   useEffect(() => {
 
