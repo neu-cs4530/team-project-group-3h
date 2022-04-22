@@ -2,7 +2,6 @@ import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage, GameAction, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
-import IGame from '../types/IGame';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
 import WordleGame from '../types/WordleGame';
@@ -169,7 +168,7 @@ export default class CoveyTownController {
    */
   removePlayerFromConversationArea(player: Player, conversation: ServerConversationArea) : void {
     conversation.occupantsByID.splice(conversation.occupantsByID.findIndex(p=>p === player.id), 1);
-    if(conversation.gameModel != undefined) {
+    if (conversation.gameModel !== undefined) {
       conversation.gameModel.removePlayer(player.id);
     }
     if (conversation.occupantsByID.length === 0) {
@@ -186,12 +185,10 @@ export default class CoveyTownController {
    * @param action 
    * @returns 
    */
-  inputGameAction(conversationAreaLabel: String, action: GameAction): boolean {
-    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
-      return conversationArea.label == conversationAreaLabel;
-    });
+  inputGameAction(conversationAreaLabel: string, action: GameAction): boolean {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
-    if(gameConversationArea) {
+    if (gameConversationArea) {
       return gameConversationArea.gameModel.inputAction(action);
     }
 
@@ -205,12 +202,10 @@ export default class CoveyTownController {
    * @param team 
    * @returns 
    */
-  addPlayerToGameTeam(conversationAreaLabel: String, player: Player, team: number): boolean {
-    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
-      return conversationArea.label == conversationAreaLabel;
-    });
+  addPlayerToGameTeam(conversationAreaLabel: string, player: Player, team: number): boolean {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
-    if(gameConversationArea) {
+    if (gameConversationArea) {
       return gameConversationArea.gameModel.addPlayerToTeam(player, team);
     }
 
@@ -224,21 +219,19 @@ export default class CoveyTownController {
  * @param team 
  * @returns 
  */
-  getGameState(conversationAreaLabel: String): GameState {
-    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
-      return conversationArea.label == conversationAreaLabel;
-    });
+  getGameState(conversationAreaLabel: string): GameState {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
-    if(gameConversationArea) {
+    if (gameConversationArea) {
       return gameConversationArea.gameModel.getState();
     }
 
     return {
       teamOneState: undefined,
       teamTwoState: undefined,
-      winner: "none",
-      isActive: false
-    }
+      winner: 'none',
+      isActive: false,
+    };
   }
 
   /**
