@@ -6,7 +6,7 @@ export type ServerConversationArea = {
   topic?: string;
   occupantsByID: string[];
   boundingBox: BoundingBox;
-  game?: IGame;
+  gameModel?: IGame;
 };
 
 export type ConversationAreaListener = {
@@ -27,10 +27,11 @@ export default class ConversationArea {
 
   private _game: IGame | undefined;
 
-  constructor(label: string, boundingBox: BoundingBox, topic?: string) {
+  constructor(label: string, boundingBox: BoundingBox, topic?: string, game?: IGame) {
     this._boundingBox = boundingBox;
     this._label = label;
     this._topic = topic;
+    this._game = game;
   }
 
   get label() {
@@ -63,6 +64,10 @@ export default class ConversationArea {
     return this._game;
   }
 
+  set game(game: IGame | undefined) {
+    this._game = game
+  }
+
   isEmpty(): boolean {
     return this._topic === undefined;
   }
@@ -77,7 +82,7 @@ export default class ConversationArea {
       occupantsByID: this.occupants,
       topic: this.topic,
       boundingBox: this.getBoundingBox(),
-      game: this.game,
+      gameModel: this.game,
     };
   }
 
@@ -97,7 +102,7 @@ export default class ConversationArea {
   }
 
   static fromServerConversationArea(serverArea: ServerConversationArea): ConversationArea {
-    const ret = new ConversationArea(serverArea.label, BoundingBox.fromStruct(serverArea.boundingBox), serverArea.topic);
+    const ret = new ConversationArea(serverArea.label, BoundingBox.fromStruct(serverArea.boundingBox), serverArea.topic, serverArea.gameModel);
     ret.occupants = serverArea.occupantsByID;
     return ret;
   }
