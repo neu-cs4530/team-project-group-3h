@@ -7,6 +7,7 @@ import http from 'http';
 import { nanoid } from 'nanoid';
 import { UserLocation } from '../CoveyTypes';
 import { BoundingBox, ServerConversationArea } from './TownsServiceClient';
+import WordleGame from '../types/WordleGame';
 
 export type RemoteServerPlayer = {
   location: UserLocation, _userName: string, _id: string
@@ -103,5 +104,6 @@ export function createConversationForTesting(params?:{ conversationLabel?: strin
     label: params?.conversationLabel || nanoid(),
     occupantsByID: [],
     topic: params?.conversationTopic || nanoid(),
+    gameModel: new WordleGame(),
   };
 }
