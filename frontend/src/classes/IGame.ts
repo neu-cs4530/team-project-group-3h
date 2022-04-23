@@ -2,12 +2,6 @@ import { GameAction, GameState } from './GameTypes';
 import type Player from './Player';
 
 export default interface IGame {
-
-  /**
-    * Returns the title of the game
-    */
-  getTitle(): string;
-
   /**
      * Activates/Deactivates a Game Session
      * @param isSessionStarted 
@@ -43,9 +37,4 @@ export default interface IGame {
      * Returns the Game State
      */
   getState(): GameState;
-
-  /**
-     * Starts the current Game
-     */
-  playGame(): void;
 }

@@ -309,6 +309,7 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
+    this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }
 

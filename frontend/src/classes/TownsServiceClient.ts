@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
-import { GameAction, GameType } from './GameTypes';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -257,6 +256,4 @@ export default class TownsServiceClient {
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/updategame`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
-
-
 }

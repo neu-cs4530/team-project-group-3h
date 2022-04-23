@@ -11,10 +11,16 @@ export type GameState = {
   isActive: boolean;
 };
 
+export type GameType = "wordle" | "tictactoe";
+
 export type TeamState = {
   teamMembers: string[];
-  guesses: string[];
+  guesses: Guess[];
   attemptsLeft?: number;
 };
 
 export type GameType = 'wordle' | 'tictactoe';
+export type Guess = {
+  word: string;
+  guessResult: number[];
+};
