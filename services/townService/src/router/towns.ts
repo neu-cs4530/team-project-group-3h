@@ -7,6 +7,8 @@ import {
   gameAddPlayerHandler,
   gameCreateHandler,
   gameInputActionHandler,
+  gameRemovePlayerHandler,
+  gameStartHandler,
   gameStateHandler,
   townCreateHandler, townDeleteHandler,
   townJoinHandler,
@@ -154,6 +156,27 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
     }
   });
 
+    /**
+   * Create a game
+   */
+     app.post('/towns/:townID/startGame', express.json(), async (req, res) => {
+      try {
+        const result = gameStartHandler({
+          coveyTownID: req.params.townID,
+          sessionToken: req.body.sessionToken,
+          conversationAreaLabel: req.body.conversationAreaLabel
+        });
+        res.status(StatusCodes.OK)
+          .json(result);
+      } catch (err) {
+        logError(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({
+            message: 'Internal server error, please see log in server for more details',
+          });
+      }
+    });
+
   /**
    * updates a game
    */
@@ -198,7 +221,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   });
 
   /**
- * gets the gameState
+ * adds a player to the game
  */
   app.post('/towns/:townID/joingameteam', express.json(), async (req, res) => {
     try {
@@ -219,6 +242,29 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         });
     }
   });
+
+  /**
+    * remove player from team
+    */
+    app.post('/towns/:townID/removeplayerfromteam', express.json(), async (req, res) => {
+    try {
+      const result = gameRemovePlayerHandler({
+        coveyTownID: req.params.townID,
+        sessionToken: req.body.sessionToken,
+        playerID: req.body.playerID,
+        conversationAreaLabel: req.body.conversationAreaLabel
+      });
+      res.status(StatusCodes.OK)
+        .json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message: 'Internal server error, please see log in server for more details',
+        });
+    }
+  });
+  
 
   const socketServer = new io.Server(http, { cors: { origin: '*' } });
   socketServer.on('connection', townSubscriptionHandler);

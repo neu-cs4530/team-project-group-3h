@@ -57,9 +57,11 @@ export default class WordleGame implements IGame {
 
   removePlayer(playerID: string): boolean {
     if (!this.enabled) return false;
-    this.blueTeam = this.blueTeam.filter((player) => player.localeCompare(playerID) !== 0);
-    this.redTeam = this.redTeam.filter((player) => player.localeCompare(playerID) !== 0);
-    return true;
+    let bSize = this.blueTeam.length;
+    let rSize = this.redTeam.length;
+    this.blueTeam.filter((player) => player !== playerID);
+    this.redTeam.filter((player) => player !== playerID);
+    return (bSize != this.blueTeam.length || rSize != this.redTeam.length);
   }
     
   gameActive(isGameStarted: boolean): void {

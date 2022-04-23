@@ -23,8 +23,8 @@ export default function WordleLobby(): JSX.Element {
   // onClick={() => (blueTeam) ? apiClient.removePlayer() : apiClient.addPlayer()}
   if (currentConversationArea?.game) {
     const activeGame = currentConversationArea.game;
-    const redTeam = activeGame.getState().teamOneState?.teamMembers.includes(playerID);
-    const blueTeam = activeGame.getState().teamTwoState?.teamMembers.includes(playerID);
+    const redTeam = true; // activeGame.getState().teamOneState?.teamMembers.includes(playerID);
+    const blueTeam = false; // activeGame.getState().teamTwoState?.teamMembers.includes(playerID);
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const redButtonText = (redTeam) ? 'Leave Red Team' : 'Join Red Team';
     const blueButtonText = (blueTeam) ? 'Leave Blue Team' : 'Join Blue Team';
