@@ -247,6 +247,22 @@ export default class CoveyTownController {
   }
 
   /**
+   * Sets the game session to active(starts game)
+   * @param conversationAreaLabel 
+   * @returns 
+   */
+  startGame(conversationAreaLabel: string): boolean {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
+
+    if (gameConversationArea) {
+      gameConversationArea.gameModel.setSessionActive(true);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Creates a new conversation area in this town if there is not currently an active
    * conversation with the same label.
    *

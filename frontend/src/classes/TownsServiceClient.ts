@@ -139,6 +139,15 @@ export interface ConversationCreateRequest {
 }
 
 /**
+ * The format for a request to start a game
+ */
+ export interface StartGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
  * Payload sent by the client to create a new conversation area
  */
  export interface ConversationAreaCreateRequest {
@@ -235,6 +244,12 @@ export default class TownsServiceClient {
 
   async getGameState(requestData: GetGameStateRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/gamestate`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  
+  async startGame(requestData: StartGameRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/startGame`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 

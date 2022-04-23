@@ -78,7 +78,7 @@ export interface GameJoinTeamRequest {
 }
 
 /**
- * The format for a request to update a game
+ * The format for a response to join a game team
  */
 export interface GameJoinTeamResponse {
   conversationAreaLabel: string;
@@ -99,6 +99,15 @@ export interface GameJoinTeamResponse {
  * The format for a request to update a game
  */
 export interface GetGameStateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to start a game
+ */
+ export interface StartGameRequest {
   coveyTownID: string;
   sessionToken: string;
   conversationAreaLabel: string;
