@@ -212,6 +212,18 @@ export default class CoveyTownController {
     return false;
   }
 
+  removePlayerFromGameTeam(conversationAreaLabel: String, playerID: string): boolean {
+    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
+      return conversationArea.label == conversationAreaLabel;
+    });
+
+    if(gameConversationArea) {
+      return gameConversationArea.gameModel.removePlayer(playerID);
+    }
+
+    return false;
+  }
+
   /**
  * TODO
  * @param conversationAreaLabel 
@@ -232,6 +244,22 @@ export default class CoveyTownController {
       winner: 'none',
       isActive: false,
     };
+  }
+
+  /**
+   * Sets the game session to active(starts game)
+   * @param conversationAreaLabel 
+   * @returns 
+   */
+  startGame(conversationAreaLabel: string): boolean {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
+
+    if (gameConversationArea) {
+      gameConversationArea.gameModel.setSessionActive(true);
+      return true;
+    }
+
+    return false;
   }
 
   /**

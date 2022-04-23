@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
-import { ServerPlayer } from './Player';
+import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
+import { GameAction, GameType } from './GameTypes';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -85,6 +86,76 @@ export interface ConversationCreateRequest {
   conversationArea: ServerConversationArea;
 }
 
+ /**
+ * The format for a request to remove a player from the game
+ */
+ export interface GameLeaveTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  playerID: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GetGameStateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+
+/**
+ * The format for a request to create a game
+ */
+ export interface CreateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameID: GameType;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface UpdateGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+  gameAction: GameAction;
+}
+
+/**
+ * The format for a request to update a game
+ */
+ export interface GameJoinTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  // coveyUserID: string;
+  player: Player;
+  teamNumber: number;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to start a game
+ */
+ export interface StartGameRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * Payload sent by the client to create a new conversation area
+ */
+ export interface ConversationAreaCreateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationArea: ServerConversationArea;
+}
+
 /**
  * Envelope that wraps any response from the server
  */
@@ -151,9 +222,41 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
   
-  async createConversation(requestData: ConversationCreateRequest) : Promise<void>{
+  async createGame(requestData: CreateGameRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/games`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async createConversation(requestData: ConversationAreaCreateRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/conversationAreas`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
+
+  async addPlayerToGameTeam(requestData: GameJoinTeamRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/joingameteam`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async removePlayerFromGameTeam(requestData: GameLeaveTeamRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/removeplayerfromteam`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async getGameState(requestData: GetGameStateRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/gamestate`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  
+  async startGame(requestData: StartGameRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/startGame`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async inputGameAction(requestData: UpdateGameRequest) : Promise<void>{
+    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/updategame`, requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
 
 }
