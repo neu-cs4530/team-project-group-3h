@@ -24,7 +24,6 @@ export type GameAction = {
 export type GameState = {
   teamOneState: TeamState | undefined;
   teamTwoState: TeamState | undefined;
-  // teams: Map<String, TeamState>;
   winner: string;
   isActive: boolean;
 };

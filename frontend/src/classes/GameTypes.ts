@@ -5,9 +5,8 @@ export type GameAction = {
 };
 
 export type GameState = {
-  teamOneState: TeamState;
-  teamTwoState: TeamState;
-  // teams: Map<String, TeamState>;
+  teamOneState: TeamState | undefined;
+  teamTwoState: TeamState | undefined;
   winner: string;
   isActive: boolean;
 };
@@ -17,3 +16,5 @@ export type TeamState = {
   guesses: string[];
   attemptsLeft?: number;
 };
+
+export type GameType = 'wordle' | 'tictactoe';
