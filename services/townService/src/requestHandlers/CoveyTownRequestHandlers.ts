@@ -82,6 +82,10 @@ export interface TownUpdateRequest {
   isPubliclyListed?: boolean;
 }
 
+export interface GameStateResponse {
+  state: GameState;
+}
+
 /**
  * Envelope that wraps any response from the server
  */
@@ -241,12 +245,12 @@ export function gameStartHandler(_requestData: StartGameRequest) : ResponseEnvel
   };
 }
 
-export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEnvelope<Record<string, GameState>> {
+export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEnvelope<GameStateResponse> {
   const townsStore = CoveyTownsStore.getInstance();
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
   if (!townController?.getSessionByToken(_requestData.sessionToken)){
     return {
-      isOK: false, response: {}, message: `Unable to get state within conversation area ${_requestData.conversationAreaLabel}`,
+      isOK: false, message: `Unable to get state within conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
   const result = townController.getGameState(_requestData.conversationAreaLabel);
@@ -254,7 +258,6 @@ export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEn
   if (result.teamOneState === undefined) {
     return {
       isOK: false,
-      response: {},
       message: `unable to get game state for ${_requestData.conversationAreaLabel}`,
     };
   } 
