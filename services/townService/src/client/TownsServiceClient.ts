@@ -49,7 +49,7 @@ export interface CreateGameResponse {
 /**
  * The format for a request to update a game
  */
- export interface UpdateGameRequest {
+export interface UpdateGameRequest {
   coveyTownID: string;
   sessionToken: string;
   conversationAreaLabel: string;
@@ -59,7 +59,7 @@ export interface CreateGameResponse {
 /**
  * The format for a request to update a game
  */
- export interface UpdateGameResponse {
+export interface UpdateGameResponse {
   conversationAreaLabel: string;
   gameState: GameState;
   success: boolean;
@@ -68,28 +68,46 @@ export interface CreateGameResponse {
 /**
  * The format for a request to update a game
  */
- export interface GameJoinTeamRequest {
+export interface GameJoinTeamRequest {
   coveyTownID: string;
   sessionToken: string;
-  //coveyUserID: string;
+  // coveyUserID: string;
   player: Player;
   teamNumber: number;
   conversationAreaLabel: string;
 }
 
 /**
- * The format for a request to update a game
+ * The format for a response to join a game team
  */
- export interface GameJoinTeamResponse {
+export interface GameJoinTeamResponse {
   conversationAreaLabel: string;
-  gameState: GameState;
   success: boolean;
+}
+
+/**
+ * The format for a request to remove a player from the game
+ */
+ export interface GameLeaveTeamRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  playerID: string;
+  conversationAreaLabel: string;
 }
 
 /**
  * The format for a request to update a game
  */
- export interface GetGameStateRequest {
+export interface GetGameStateRequest {
+  coveyTownID: string;
+  sessionToken: string;
+  conversationAreaLabel: string;
+}
+
+/**
+ * The format for a request to start a game
+ */
+ export interface StartGameRequest {
   coveyTownID: string;
   sessionToken: string;
   conversationAreaLabel: string;
@@ -98,7 +116,7 @@ export interface CreateGameResponse {
 /**
  * The format for a request to update a game
  */
- export interface GetGameStateResponse {
+export interface GetGameStateResponse {
   conversationAreaLabel: string;
   gameState: GameState;
   success: boolean;

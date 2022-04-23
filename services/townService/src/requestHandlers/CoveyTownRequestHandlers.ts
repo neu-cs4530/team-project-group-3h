@@ -4,7 +4,7 @@ import Player from '../types/Player';
 import { ChatMessage, CoveyTownList, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { ConversationAreaCreateRequest, CreateGameRequest, GameJoinTeamRequest, GetGameStateRequest, ServerConversationArea, UpdateGameRequest } from '../client/TownsServiceClient';
+import { ConversationAreaCreateRequest, CreateGameRequest, GameJoinTeamRequest, GameLeaveTeamRequest, GetGameStateRequest, ServerConversationArea, StartGameRequest, UpdateGameRequest } from '../client/TownsServiceClient';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -211,7 +211,7 @@ export function gameCreateHandler(_requestData: CreateGameRequest) : ResponseEnv
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
   if (!townController?.getSessionByToken(_requestData.sessionToken)){
     return {
-      isOK: false, response: {}, message: `Unable to create game within conversation area ${_requestData.conversationAreaLabel}`,
+      isOK: false, response: {}, message: ` Bad session token | Unable to create game within conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
   const success = townController.createGame(_requestData.conversationAreaLabel);
@@ -224,6 +224,23 @@ export function gameCreateHandler(_requestData: CreateGameRequest) : ResponseEnv
 }
 
 
+export function gameStartHandler(_requestData: StartGameRequest) : ResponseEnvelope<Record<string, null>> {
+  const townsStore = CoveyTownsStore.getInstance();
+  const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
+  if (!townController?.getSessionByToken(_requestData.sessionToken)){
+    return {
+      isOK: false, response: {}, message: ` Bad session token | Unable to start game within conversation area ${_requestData.conversationAreaLabel}`,
+    };
+  }
+  const success = townController.startGame(_requestData.conversationAreaLabel);
+
+  return {
+    isOK: success,
+    response: {},
+    message: !success ? `Unable to start game within conversation area ${_requestData.conversationAreaLabel}` : undefined,
+  };
+}
+
 export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEnvelope<Record<string, GameState>> {
   const townsStore = CoveyTownsStore.getInstance();
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
@@ -234,19 +251,19 @@ export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEn
   }
   const result = townController.getGameState(_requestData.conversationAreaLabel);
 
-  if(result.teamOneState === undefined) {
+  if (result.teamOneState === undefined) {
     return {
       isOK: false,
       response: {},
-      message: `unable to get game state for ${_requestData.conversationAreaLabel}`
+      message: `unable to get game state for ${_requestData.conversationAreaLabel}`,
     };
-  } else {
-    return {
-      isOK: true,
-      response: {state: result},
-      message: `successfully retrieved game state for ${_requestData.conversationAreaLabel}`
-    }
-  }
+  } 
+  return {
+    isOK: true,
+    response: { state: result },
+    message: `successfully retrieved game state for ${_requestData.conversationAreaLabel}`,
+  };
+  
 }
 
 export function gameInputActionHandler(_requestData: UpdateGameRequest) : ResponseEnvelope<Record<string, null>> {
@@ -275,6 +292,23 @@ export function gameAddPlayerHandler(_requestData: GameJoinTeamRequest) : Respon
     };
   }
   const success = townController.addPlayerToGameTeam(_requestData.conversationAreaLabel, _requestData.player, _requestData.teamNumber);
+
+  return {
+    isOK: success,
+    response: {},
+    message: !success ? `Unable to send game action within conversation area ${_requestData.conversationAreaLabel}` : undefined,
+  };
+}
+
+export function gameRemovePlayerHandler(_requestData: GameLeaveTeamRequest) : ResponseEnvelope<Record<string, null>> {
+  const townsStore = CoveyTownsStore.getInstance();
+  const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
+  if (!townController?.getSessionByToken(_requestData.sessionToken)){
+    return {
+      isOK: false, response: {}, message: `Unable to remove player from game within conversation area ${_requestData.conversationAreaLabel}`,
+    };
+  }
+  const success = townController.removePlayerFromGameTeam(_requestData.conversationAreaLabel, _requestData.playerID);
 
   return {
     isOK: success,
