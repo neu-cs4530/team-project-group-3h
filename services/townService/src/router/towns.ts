@@ -156,26 +156,26 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
     }
   });
 
-    /**
+  /**
    * Create a game
    */
-     app.post('/towns/:townID/startGame', express.json(), async (req, res) => {
-      try {
-        const result = gameStartHandler({
-          coveyTownID: req.params.townID,
-          sessionToken: req.body.sessionToken,
-          conversationAreaLabel: req.body.conversationAreaLabel
+  app.post('/towns/:townID/startGame', express.json(), async (req, res) => {
+    try {
+      const result = gameStartHandler({
+        coveyTownID: req.params.townID,
+        sessionToken: req.body.sessionToken,
+        conversationAreaLabel: req.body.conversationAreaLabel,
+      });
+      res.status(StatusCodes.OK)
+        .json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message: 'Internal server error, please see log in server for more details',
         });
-        res.status(StatusCodes.OK)
-          .json(result);
-      } catch (err) {
-        logError(err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({
-            message: 'Internal server error, please see log in server for more details',
-          });
-      }
-    });
+    }
+  });
 
   /**
    * updates a game
@@ -246,13 +246,13 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
     * remove player from team
     */
-    app.post('/towns/:townID/removeplayerfromteam', express.json(), async (req, res) => {
+  app.post('/towns/:townID/removeplayerfromteam', express.json(), async (req, res) => {
     try {
       const result = gameRemovePlayerHandler({
         coveyTownID: req.params.townID,
         sessionToken: req.body.sessionToken,
         playerID: req.body.playerID,
-        conversationAreaLabel: req.body.conversationAreaLabel
+        conversationAreaLabel: req.body.conversationAreaLabel,
       });
       res.status(StatusCodes.OK)
         .json(result);

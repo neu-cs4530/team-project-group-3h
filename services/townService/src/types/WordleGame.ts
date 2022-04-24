@@ -57,11 +57,11 @@ export default class WordleGame implements IGame {
 
   removePlayer(playerID: string): boolean {
     // if (!this.enabled) return false;
-    let bSize = this.blueTeam.length;
-    let rSize = this.redTeam.length;
-    this.blueTeam.filter((player) => player !== playerID);
-    this.redTeam.filter((player) => player !== playerID);
-    return (bSize != this.blueTeam.length || rSize != this.redTeam.length);
+    const bSize = this.blueTeam.length;
+    const rSize = this.redTeam.length;
+    const bSize2 = this.blueTeam.filter((player) => player !== playerID);
+    const rSize2 = this.redTeam.filter((player) => player !== playerID);
+    return (bSize !== bSize2.length || rSize !== rSize2.length);
   }
     
   /*
