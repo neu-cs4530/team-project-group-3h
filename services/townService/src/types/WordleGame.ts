@@ -39,18 +39,24 @@ export default class WordleGame implements IGame {
     this.enabled = isSessionStarted;
   }
     
-  addPlayerToTeam(player: Player, teamToJoin: number): boolean {
+  addPlayerToTeam(playerID: string, teamToJoin: number): boolean {
+    console.log(`Player ID within model: ${playerID}`);
     // 1 maps to red team, 2 to blue
     if (teamToJoin !== 1 && teamToJoin !== 2) return false;
     if (this.enabled) return false; 
 
-    const playerID: string = player.id;
+    // const playerID: string = player.id;
     if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) return false;
     if ((this.blueTeam.indexOf(playerID) !== -1) || (this.redTeam.indexOf(playerID) !== -1)) {
       this.removePlayer(playerID);
     }
     const teamArray: string[] = (teamToJoin === 1) ? this.redTeam : this.blueTeam;
-    teamArray.push(player.id); // error vs boolean    
+    teamArray.push(playerID); // error vs boolean   
+    console.log(`Player ID: ${playerID}`); 
+    console.log(`Team to join: ${teamToJoin}`); 
+    console.log(`Team array after pushing: ${teamArray}`);
+    console.log(`Blue team: ${this.blueTeam}`);
+    console.log(`Red team: ${this.redTeam}`);
     return true;
   }
     
@@ -59,8 +65,8 @@ export default class WordleGame implements IGame {
     // if (!this.enabled) return false;
     let bSize = this.blueTeam.length;
     let rSize = this.redTeam.length;
-    this.blueTeam.filter((player) => player !== playerID);
-    this.redTeam.filter((player) => player !== playerID);
+    this.blueTeam = this.blueTeam.filter((player) => player !== playerID);
+    this.redTeam = this.redTeam.filter((player) => player !== playerID);
     return (bSize != this.blueTeam.length || rSize != this.redTeam.length);
   }
     
