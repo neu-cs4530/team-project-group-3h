@@ -134,8 +134,9 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
           value={input}
           onChange={(e) => setInput(e.currentTarget.value)}
           onKeyPress={e => {
-            if (e.key === 'Enter') {
-              // apiClient.inputAction();
+            if (e.key === 'Enter' && currentConversationArea) {
+              apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
+                gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
             }
           }}
           isDisabled={(!redTeam && !blueTeam)} />
@@ -144,12 +145,8 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
 
   // ensure the game session is active, then display the game board
   if (currentConversationArea?.game) {
-    console.log('in the if statement');
     getGameState(currentConversationArea).then((gameState) => {
-      console.log('in the .then');
-      console.log(gameState);
       constructBoards(gameState);
-      console.log(element);
     });
   }
 

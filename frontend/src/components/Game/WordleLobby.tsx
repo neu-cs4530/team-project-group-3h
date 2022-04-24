@@ -17,10 +17,7 @@ export default function WordleLobby(): JSX.Element {
   const players = usePlayersInTown();
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
-
-  useEffect(() => {
-
-  }, [currentConversationArea]);
+  const [element, setElement] = useState(<></>);
 
   async function addPlayer(convoArea: ConversationArea, teamNumber: number) {
     const myPlayer = players.find((player) => player.id === playerID);
@@ -48,29 +45,33 @@ export default function WordleLobby(): JSX.Element {
     return stateInfo.state;
   }
 
-  // ensure that the conversation area has an active game session, then display the lobby
-  if (currentConversationArea?.game) {
-    const gameState = getGameState(currentConversationArea) as unknown as GameState;
+  function constructLobby(gameState : GameState, convoArea : ConversationArea) {
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const redButtonText = (redTeam) ? 'Leave Red Team' : 'Join Red Team';
     const blueButtonText = (blueTeam) ? 'Leave Blue Team' : 'Join Blue Team';
-    return (
+
+    setElement(
       <VStack align='center'>
         <h1> WORDLE </h1>
         <Text fontSize='lg'>Join a team to play Wordle!</Text>
         <Stack spacing={2} direction='row' align='center'>
-        {/* (redTeam) ? removePlayer(currentConversationArea) :  */}
-        {/* (blueTeam) ? removePlayer(currentConversationArea) :  */}
-          <Button onClick={() => addPlayer(currentConversationArea, 1)} colorScheme='red' size='sm'>{redButtonText}</Button>
-          <Button onClick={() => addPlayer(currentConversationArea, 2)} colorScheme='blue' size='sm'>{blueButtonText}</Button>
+          <Button onClick={() => (redTeam) ? removePlayer(convoArea) : addPlayer(convoArea, 1)} colorScheme='red' size='sm'>{redButtonText}</Button>
+          <Button onClick={() => (blueTeam) ? removePlayer(convoArea) : addPlayer(convoArea, 2)} colorScheme='blue' size='sm'>{blueButtonText}</Button>
         </Stack>
         <Text fontSize='sm'>{yourTeamHeader}</Text>
       </VStack>
     );
   }
-  return <></>;
+
+  if (currentConversationArea?.game) {
+    getGameState(currentConversationArea).then((gameState) => {
+      constructLobby(gameState, currentConversationArea);
+    });
+  }
+
+  return element;
 }
 
 
