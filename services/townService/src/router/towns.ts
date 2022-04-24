@@ -17,6 +17,7 @@ import {
   townUpdateHandler,
 } from '../requestHandlers/CoveyTownRequestHandlers';
 import { logError } from '../Utils';
+import { GameJoinTeamRequest } from '../client/TownsServiceClient';
 
 export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
@@ -225,13 +226,14 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
  */
   app.post('/towns/:townID/joingameteam', express.json(), async (req, res) => {
     try {
-      const result = gameAddPlayerHandler({
+      const teamJoinRequest: GameJoinTeamRequest = {
         coveyTownID: req.params.townID,
         sessionToken: req.body.sessionToken,
-        player: req.body.Player,
+        playerID: req.body.playerID,
         teamNumber: req.body.teamNumber,
-        conversationAreaLabel: req.body.conversationAreaLabel,
-      });
+        conversationAreaLabel: req.body.conversationAreaLabel
+      };
+      const result = gameAddPlayerHandler(teamJoinRequest);
       res.status(StatusCodes.OK)
         .json(result);
     } catch (err) {

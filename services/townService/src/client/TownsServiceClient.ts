@@ -72,7 +72,7 @@ export interface GameJoinTeamRequest {
   coveyTownID: string;
   sessionToken: string;
   // coveyUserID: string;
-  player: Player;
+  playerID: string;
   teamNumber: number;
   conversationAreaLabel: string;
 }

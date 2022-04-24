@@ -202,12 +202,11 @@ export default class CoveyTownController {
    * @param team 
    * @returns 
    */
-  addPlayerToGameTeam(conversationAreaLabel: string, player: Player, team: number): boolean {
+  addPlayerToGameTeam(conversationAreaLabel: string, playerID: string, team: number): boolean {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
-    console.log(gameConversationArea?.label);
 
     if (gameConversationArea) {
-      return gameConversationArea.gameModel.addPlayerToTeam(player, team);
+      return gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
     }
 
     return false;

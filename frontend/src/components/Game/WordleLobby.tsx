@@ -2,6 +2,7 @@ import { Button, Stack, VStack, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import ConversationArea from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
+import { GameJoinTeamRequest } from '../../classes/TownsServiceClient';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 import usePlayersInTown from '../../hooks/usePlayersInTown';
@@ -24,10 +25,14 @@ export default function WordleLobby(): JSX.Element {
   async function addPlayer(convoArea: ConversationArea, teamNumber: number) {
     const myPlayer = players.find((player) => player.id === playerID);
     if (myPlayer) {
-      await apiClient.addPlayerToGameTeam({
-        coveyTownID: currentTownID, sessionToken,
-        player: myPlayer, teamNumber, conversationAreaLabel: convoArea.label
-      });
+      const teamJoinRequest: GameJoinTeamRequest = {
+        coveyTownID: currentTownID,
+        sessionToken,
+        playerID: myPlayer.id,
+        teamNumber,
+        conversationAreaLabel: convoArea.label
+      };
+      await apiClient.addPlayerToGameTeam(teamJoinRequest);
     }
   }
 
@@ -56,8 +61,10 @@ export default function WordleLobby(): JSX.Element {
         <h1> WORDLE </h1>
         <Text fontSize='lg'>Join a team to play Wordle!</Text>
         <Stack spacing={2} direction='row' align='center'>
-          <Button onClick={() => (redTeam) ? removePlayer(currentConversationArea) : addPlayer(currentConversationArea, 1)} colorScheme='red' size='sm'>{redButtonText}</Button>
-          <Button onClick={() => (blueTeam) ? removePlayer(currentConversationArea) : addPlayer(currentConversationArea, 2)} colorScheme='blue' size='sm'>{blueButtonText}</Button>
+        {/* (redTeam) ? removePlayer(currentConversationArea) :  */}
+        {/* (blueTeam) ? removePlayer(currentConversationArea) :  */}
+          <Button onClick={() => addPlayer(currentConversationArea, 1)} colorScheme='red' size='sm'>{redButtonText}</Button>
+          <Button onClick={() => addPlayer(currentConversationArea, 2)} colorScheme='blue' size='sm'>{blueButtonText}</Button>
         </Stack>
         <Text fontSize='sm'>{yourTeamHeader}</Text>
       </VStack>

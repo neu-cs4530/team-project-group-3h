@@ -294,7 +294,9 @@ export function gameAddPlayerHandler(_requestData: GameJoinTeamRequest) : Respon
       isOK: false, response: {}, message: `Unable send game action within conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
-  const success = townController.addPlayerToGameTeam(_requestData.conversationAreaLabel, _requestData.player, _requestData.teamNumber);
+
+  const success = townController.addPlayerToGameTeam(_requestData.conversationAreaLabel, _requestData.playerID, _requestData.teamNumber);
+  console.log(`Is success: ${success}`);
 
   return {
     isOK: success,
