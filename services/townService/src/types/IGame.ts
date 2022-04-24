@@ -25,7 +25,7 @@ export default interface IGame {
      * Starts or stops the game
      * @param isGameStarted 
      */
-  gameActive(isGameStarted: boolean): void;
+  // gameActive(isGameStarted: boolean): void;
 
   /**
      * Inputs an Action

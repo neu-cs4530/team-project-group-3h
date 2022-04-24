@@ -19,7 +19,7 @@ export default function WordleLobby(): JSX.Element {
 
   useEffect(() => {
 
-  }, [currentConversationArea])
+  }, [currentConversationArea]);
 
   async function addPlayer(convoArea: ConversationArea, teamNumber: number) {
     const myPlayer = players.find((player) => player.id === playerID);
@@ -39,15 +39,12 @@ export default function WordleLobby(): JSX.Element {
   }
 
   async function getGameState(convoArea: ConversationArea) {
-    console.log('in the get game state function');
     const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
-    console.log('await finished');
     return stateInfo.state;
   }
 
   // ensure that the conversation area has an active game session, then display the lobby
   if (currentConversationArea?.game) {
-    console.log(currentConversationArea);
     const gameState = getGameState(currentConversationArea) as unknown as GameState;
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);

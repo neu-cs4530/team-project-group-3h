@@ -204,6 +204,7 @@ export default class CoveyTownController {
    */
   addPlayerToGameTeam(conversationAreaLabel: string, player: Player, team: number): boolean {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
+    console.log(gameConversationArea?.label);
 
     if (gameConversationArea) {
       return gameConversationArea.gameModel.addPlayerToTeam(player, team);

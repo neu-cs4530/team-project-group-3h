@@ -299,7 +299,7 @@ export function gameAddPlayerHandler(_requestData: GameJoinTeamRequest) : Respon
   return {
     isOK: success,
     response: {},
-    message: !success ? `Unable to send game action within conversation area ${_requestData.conversationAreaLabel}` : undefined,
+    message: (!success) ? `Unable to send game action within conversation area ${_requestData.conversationAreaLabel}` : undefined,
   };
 }
 

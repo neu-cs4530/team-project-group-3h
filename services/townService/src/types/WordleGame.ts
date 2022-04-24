@@ -42,7 +42,7 @@ export default class WordleGame implements IGame {
   addPlayerToTeam(player: Player, teamToJoin: number): boolean {
     // 1 maps to red team, 2 to blue
     if (teamToJoin !== 1 && teamToJoin !== 2) return false;
-    if (!this.enabled) return false; 
+    if (this.enabled) return false; 
 
     const playerID: string = player.id;
     if ((this.blueTeam.indexOf(playerID) !== -1) && (this.redTeam.indexOf(playerID) !== -1)) return false;
@@ -56,7 +56,7 @@ export default class WordleGame implements IGame {
     
 
   removePlayer(playerID: string): boolean {
-    if (!this.enabled) return false;
+    // if (!this.enabled) return false;
     let bSize = this.blueTeam.length;
     let rSize = this.redTeam.length;
     this.blueTeam.filter((player) => player !== playerID);
@@ -64,14 +64,16 @@ export default class WordleGame implements IGame {
     return (bSize != this.blueTeam.length || rSize != this.redTeam.length);
   }
     
+  /*
   gameActive(isGameStarted: boolean): void {
     this.active = isGameStarted;
   }
+  */
     
   inputAction(action: GameAction): boolean {
     if (this.redTeam.indexOf(action.playerID) === -1 && this.blueTeam.indexOf(action.playerID) === -1) return false;
     if (this.redTeam.indexOf(action.playerID) !== -1 && this.blueTeam.indexOf(action.playerID) !== -1) return false;
-    if (!this.active) return false;
+    if (!this.enabled) return false;
 
     try {
       const teamToAddGuessTo: Guess[] = (this.blueTeam.indexOf(action.playerID) !== -1) ? this.blueGuesses : this.redGuesses;
