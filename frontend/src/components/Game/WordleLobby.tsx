@@ -10,7 +10,6 @@ import usePlayersInTown from '../../hooks/usePlayersInTown';
 /**
  * A Wordle Lobby, with buttons to join a team, your current state (red, blue, spectator), and a list of players on each team
  * @returns A JSX Element representing the Wordle Lobby
- * 
  */
 export default function WordleLobby(): JSX.Element {
   const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
@@ -23,7 +22,6 @@ export default function WordleLobby(): JSX.Element {
     winner: ' ',
     isActive: false,
   });
-  // const [element, setElement] = useState(<></>);  
   useEffect(() => {
     async function getGameState() {
       if (currentConversationArea) {
@@ -55,12 +53,20 @@ export default function WordleLobby(): JSX.Element {
     });
   }
 
+  function yourTeamHeader(redTeam : boolean | undefined, blueTeam : boolean | undefined): string {
+    if(!redTeam && blueTeam) {
+      return 'You are on blue team!';
+    }
+    if(redTeam) {
+      return 'You are on red team!';
+    }
+    return 'You are spectating!';
+  }
+
   function constructLobby(convoArea: ConversationArea) {
     const gameState = currentGameState;
-    // console.log(gameState);
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
-    const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const redButtonText = (redTeam) ? 'Leave Red Team' : 'Join Red Team';
     const blueButtonText = (blueTeam) ? 'Leave Blue Team' : 'Join Blue Team';
 
@@ -72,7 +78,7 @@ export default function WordleLobby(): JSX.Element {
           <Button onClick={() => (redTeam) ? removePlayer(convoArea) : addPlayer(convoArea, 1)} colorScheme='red' size='sm'>{redButtonText}</Button>
           <Button onClick={() => (blueTeam) ? removePlayer(convoArea) : addPlayer(convoArea, 2)} colorScheme='blue' size='sm'>{blueButtonText}</Button>
         </Stack>
-        <Text fontSize='sm'>{yourTeamHeader}</Text>
+        <Text fontSize='sm'>{yourTeamHeader(redTeam, blueTeam)}</Text>
       </VStack>
     );
   }
@@ -80,8 +86,6 @@ export default function WordleLobby(): JSX.Element {
   if (!currentConversationArea) return (<></>);
   if (!currentConversationArea.game) return (<></>);
   return constructLobby(currentConversationArea);
-  // return toRender;
-  // return element;
 }
 
 
