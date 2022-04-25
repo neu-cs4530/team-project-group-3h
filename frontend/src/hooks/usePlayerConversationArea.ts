@@ -4,6 +4,7 @@ import { ServerPlayer } from "../classes/Player";
 import useConversationAreas from "./useConversationAreas";
 import useCoveyAppState from "./useCoveyAppState";
 import usePlayerMovement from "./usePlayerMovement";
+import usePlayersInTown from "./usePlayersInTown";
 
 /**
  * Returns the conversation area your player is in, or undefined if they are not in one. Listens for player movement events and updates the
@@ -21,7 +22,7 @@ export default function usePlayerConversationArea() : ConversationArea | undefin
         const movementDispatcher = (player: ServerPlayer) => {
             if (player._id === playerID && player.location.conversationLabel !== currentConversationArea?.label) {
                 setCurrentConversationArea(conversationAreas.find((area : ConversationArea) => area.label === player.location.conversationLabel));
-                console.log(currentConversationArea);
+                // console.log(currentConversationArea);
             }
         };
         playerMovementCallbacks.push(movementDispatcher);

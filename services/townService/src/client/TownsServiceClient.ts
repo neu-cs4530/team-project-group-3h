@@ -72,7 +72,7 @@ export interface GameJoinTeamRequest {
   coveyTownID: string;
   sessionToken: string;
   // coveyUserID: string;
-  player: Player;
+  playerID: string;
   teamNumber: number;
   conversationAreaLabel: string;
 }
@@ -88,7 +88,7 @@ export interface GameJoinTeamResponse {
 /**
  * The format for a request to remove a player from the game
  */
- export interface GameLeaveTeamRequest {
+export interface GameLeaveTeamRequest {
   coveyTownID: string;
   sessionToken: string;
   playerID: string;
@@ -106,7 +106,7 @@ export interface GetGameStateRequest {
 /**
  * The format for a request to start a game
  */
- export interface StartGameRequest {
+export interface StartGameRequest {
   coveyTownID: string;
   sessionToken: string;
   conversationAreaLabel: string;

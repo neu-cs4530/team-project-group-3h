@@ -1,11 +1,13 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import ConversationArea from '../../classes/ConversationArea';
+import { GameState } from '../../classes/GameTypes';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 
 type WordleRowProps = {
   guessArray: string[],
-  letterColors: number[], 
+  letterColors: number[],
   showLetters: boolean
 }
 
@@ -29,7 +31,7 @@ type GameBoardProps = {
  */
 // add map or dictionary to relate color to number
 function WordleLetter(props: WordleLetterProps): JSX.Element {
-  const {letter, color} = props;
+  const { letter, color } = props;
   const letterColorMatch = new Map([[0, 'gray'], [1, 'green'], [-1, 'yellow']]);
 
   return <Button size='sm' colorScheme={letterColorMatch.get(color)}>{letter}</Button>
@@ -41,13 +43,13 @@ function WordleLetter(props: WordleLetterProps): JSX.Element {
  * @returns JSX.Element representing an entire guessed wordle row
  */
 function WordleRow(props: WordleRowProps): JSX.Element {
-    const {guessArray, letterColors, showLetters} = props; 
+  const { guessArray, letterColors, showLetters } = props;
 
-    return(
-        <HStack spacing='12px'>
-          {guessArray.map((guess, index) => <WordleLetter key={index.toString()} letter={(showLetters) ? guess : ''} color={letterColors[index]}/>)}
-      </HStack>
-    );
+  return (
+    <HStack spacing='12px'>
+      {guessArray.map((guess, index) => <WordleLetter key={index.toString()} letter={(showLetters) ? guess : ''} color={letterColors[index]} />)}
+    </HStack>
+  );
 }
 
 /**
@@ -57,8 +59,8 @@ function WordleRow(props: WordleRowProps): JSX.Element {
 function BlankRow(): JSX.Element {
   const blankRows = [];
 
-  for(let i = 0; i < 5; i += 1) {
-    blankRows.push(<Button size='sm' variant='outline'/>);
+  for (let i = 0; i < 5; i += 1) {
+    blankRows.push(<Button size='sm' variant='outline' />);
   }
 
   return <HStack spacing='12px'>{blankRows}</HStack>
@@ -69,13 +71,13 @@ function BlankRow(): JSX.Element {
  * @param props the rows representing words the team has guessed
  * @returns JSX.Element of the entire team's board
  */
-function AllRows(props: AllRowsProps) : JSX.Element {
-  const {guessRows} = props;
+function AllRows(props: AllRowsProps): JSX.Element {
+  const { guessRows } = props;
   const allRows = [];
 
   if (guessRows) {
-    for(let i = 0; i < 6; i += 1) {
-      allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow/>);
+    for (let i = 0; i < 6; i += 1) {
+      allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow />);
     }
   }
 
@@ -88,29 +90,32 @@ function AllRows(props: AllRowsProps) : JSX.Element {
  */
 export default function GameBoard(props: GameBoardProps): JSX.Element {
   const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
-  const {gameover} = props;
+  const { gameover } = props;
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
   const [input, setInput] = useState('');
+  const [element, setElement] = useState(<></>);
 
-  // ensure the game session is active, then display the game board
-  if (currentConversationArea?.game) {
-    const activeGame = currentConversationArea.game;
-    const redTeam = activeGame.getState().teamOneState?.teamMembers.includes(playerID);
-    const blueTeam = activeGame.getState().teamTwoState?.teamMembers.includes(playerID);
-    const redGuesses = activeGame.getState().teamOneState?.guesses;
-    const blueGuesses = activeGame.getState().teamTwoState?.guesses;
+  async function getGameState(convoArea: ConversationArea): Promise<GameState> {
+    const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
+    return stateInfo.state;
+  }
+
+  function constructBoards(gameState: GameState) {
+    const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
+    const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
+    const redGuesses = gameState.teamOneState?.guesses;
+    const blueGuesses = gameState.teamTwoState?.guesses;
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const displayText = (gameover) ? 'Game Over' : yourTeamHeader;
+    const redRows = redGuesses?.map((guess, index) =>
+      <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover} />);
+    const blueRows = blueGuesses?.map((guess, index) =>
+      <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!redTeam) || gameover} />);
+    const redBoard = <AllRows guessRows={redRows} />;
+    const blueBoard = <AllRows guessRows={blueRows} />;
 
-    const redRows = redGuesses?.map((guess, index) => 
-    <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover}/>);
-    const blueRows = blueGuesses?.map((guess, index) => 
-    <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!redTeam) || gameover}/>);
-    const redBoard = <AllRows guessRows={redRows}/>;
-    const blueBoard = <AllRows guessRows={blueRows}/>;
-
-    return (
+    setElement(
       <VStack padding={4} align='center'>
         <Text fontSize='xl'>Wordle</Text>
         <HStack spacing='24px'>
@@ -124,19 +129,26 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
           </VStack>
         </HStack>
         <Text fontSize='lg'>{displayText}</Text>
-        <Input 
+        <Input
           size='sm'
-          value={input} 
-          onChange={(e)=> setInput(e.currentTarget.value)}
-          onKeyPress={e=> {
-            if (e.key === 'Enter') {
-               // apiClient.inputAction();
+          value={input}
+          onChange={(e) => setInput(e.currentTarget.value)}
+          onKeyPress={e => {
+            if (e.key === 'Enter' && currentConversationArea) {
+              apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
+                gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
             }
-         }} 
+          }}
           isDisabled={(!redTeam && !blueTeam)} />
-      </VStack>
-    );
+      </VStack>);
   }
 
-  return <></>;
+  // ensure the game session is active, then display the game board
+  if (currentConversationArea?.game) {
+    getGameState(currentConversationArea).then((gameState) => {
+      constructBoards(gameState);
+    });
+  }
+
+  return element;
 }

@@ -32,7 +32,6 @@ export default function GameWindow(): JSX.Element {
 
     // if the player is in an active conversation area, we want to display our game window
     if (currentConversationArea && currentConversationArea?.topic !== NO_TOPIC_STRING) {
-        console.log(currentConversationArea);
         switch (currentPhase) {
             case 'list': {
                 return (
