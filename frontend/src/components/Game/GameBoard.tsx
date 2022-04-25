@@ -62,7 +62,7 @@ function BlankRow(): JSX.Element {
   const blankRows = [];
 
   for (let i = 0; i < 5; i += 1) {
-    blankRows.push(<Button size='sm' variant='outline' />);
+    blankRows.push(<Button key={nanoid()}size='sm' variant='outline' />);
   }
 
   return <HStack spacing='12px'>{blankRows}</HStack>
@@ -118,8 +118,8 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
       <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover} />);
     const blueRows = blueGuesses?.map((guess, index) =>
       <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!redTeam) || gameover} />);
-    const redBoard = <AllRows guessRows={redRows} />;
-    const blueBoard = <AllRows guessRows={blueRows} />;
+    const redBoard = <AllRows key={nanoid()} guessRows={redRows} />;
+    const blueBoard = <AllRows key={nanoid()} guessRows={blueRows} />;
 
     const elementResult = (
       <VStack padding={4} align='center'>
