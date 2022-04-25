@@ -1,7 +1,9 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import ConversationArea from '../../classes/ConversationArea';
+import ConversationArea, { ConversationAreaListener } from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
+import IGame from '../../classes/IGame';
+import WordleGame from '../../classes/WordleGame';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 
@@ -94,19 +96,36 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
   const [input, setInput] = useState('');
+  const [game, setGame] = useState(currentConversationArea?.game);
   const [element, setElement] = useState(<></>);
 
-  async function getGameState(convoArea: ConversationArea): Promise<GameState> {
-    const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
-    return stateInfo.state;
+  useEffect(() => {
+    const setGameToNewGame = (newGame: IGame) => {
+      if(currentConversationArea)
+        currentConversationArea.game = newGame;
+    };
+    const listener: ConversationAreaListener = {onGameChange: setGameToNewGame};
+    currentConversationArea?.addListener(listener);
+
+    return function cleanUp() {
+      currentConversationArea?.removeListener(listener);
+    };
+  }, [game]);
+
+  function getGameState(convoArea: ConversationArea): GameState {
+    // const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, conversationAreaLabel: convoArea.label });
+    // return stateInfo.state;
+    const newGame = new WordleGame();
+    Object.assign(newGame, convoArea.game);
+    return (newGame as WordleGame).getState() as GameState;
   }
 
-  function constructBoards(gameState: GameState) {
+  function constructBoards(gameState: GameState): JSX.Element {
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
     const redGuesses = gameState.teamOneState?.guesses;
     const blueGuesses = gameState.teamTwoState?.guesses;
-    const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
+    const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : `You are on ${(redTeam) ? "red": "blue"} team!`;
     const displayText = (gameover) ? 'Game Over' : yourTeamHeader;
     const redRows = redGuesses?.map((guess, index) =>
       <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover} />);
@@ -115,7 +134,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
     const redBoard = <AllRows guessRows={redRows} />;
     const blueBoard = <AllRows guessRows={blueRows} />;
 
-    setElement(
+    const elementResult = (
       <VStack padding={4} align='center'>
         <Text fontSize='xl'>Wordle</Text>
         <HStack spacing='24px'>
@@ -141,13 +160,16 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
           }}
           isDisabled={(!redTeam && !blueTeam)} />
       </VStack>);
+
+      return elementResult;
   }
 
   // ensure the game session is active, then display the game board
   if (currentConversationArea?.game) {
-    getGameState(currentConversationArea).then((gameState) => {
+    /* getGameState(currentConversationArea).then((gameState) => {
       constructBoards(gameState);
-    });
+    }); */
+    return constructBoards(getGameState(currentConversationArea));
   }
 
   return element;

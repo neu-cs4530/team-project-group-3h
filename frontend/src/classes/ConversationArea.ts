@@ -12,6 +12,7 @@ export type ServerConversationArea = {
 export type ConversationAreaListener = {
   onTopicChange?: (newTopic: string | undefined) => void;
   onOccupantsChange?: (newOccupants: string[]) => void;
+  onGameChange?: (newGame: IGame) => void;
 };
 export const NO_TOPIC_STRING = '(No topic)';
 export default class ConversationArea {
@@ -65,6 +66,7 @@ export default class ConversationArea {
   }
 
   set game(game: IGame | undefined) {
+    this._listeners.forEach(listener => listener.onGameChange?.(game as IGame));
     this._game = game
   }
 

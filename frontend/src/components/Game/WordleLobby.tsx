@@ -2,7 +2,9 @@ import { Button, Stack, VStack, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import ConversationArea from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
+import IGame from '../../classes/IGame';
 import { GameJoinTeamRequest } from '../../classes/TownsServiceClient';
+import WordleGame from '../../classes/WordleGame';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 import usePlayersInTown from '../../hooks/usePlayersInTown';
@@ -40,19 +42,22 @@ export default function WordleLobby(): JSX.Element {
     });
   }
 
-  async function getGameState(convoArea: ConversationArea) {
-    const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
-    return stateInfo.state;
+  function getGameState(convoArea: ConversationArea) {
+    // const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, conversationAreaLabel: convoArea.label });
+    // return stateInfo.state;
+    const newGame = new WordleGame();
+    Object.assign(newGame, convoArea.game);
+    return (newGame as WordleGame).getState() as GameState;
   }
 
-  function constructLobby(gameState : GameState, convoArea : ConversationArea) {
+  function constructLobby(gameState : GameState, convoArea : ConversationArea): JSX.Element {
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const redButtonText = (redTeam) ? 'Leave Red Team' : 'Join Red Team';
     const blueButtonText = (blueTeam) ? 'Leave Blue Team' : 'Join Blue Team';
-
-    setElement(
+    // let elementResult;
+    const elementResult = (
       <VStack align='center'>
         <h1> WORDLE </h1>
         <Text fontSize='lg'>Join a team to play Wordle!</Text>
@@ -63,15 +68,19 @@ export default function WordleLobby(): JSX.Element {
         <Text fontSize='sm'>{yourTeamHeader}</Text>
       </VStack>
     );
+
+    return elementResult;
   }
 
   if (currentConversationArea?.game) {
-    getGameState(currentConversationArea).then((gameState) => {
+    /* getGameState(currentConversationArea).then((gameState) => {
       constructLobby(gameState, currentConversationArea);
-    });
-  }
+    }); */
+    return constructLobby(getGameState(currentConversationArea), currentConversationArea);
+  } // else {
 
   return element;
+  // }
 }
 
 

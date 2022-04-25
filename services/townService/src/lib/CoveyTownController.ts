@@ -189,10 +189,16 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
-      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
-      return gameConversationArea.gameModel.inputAction(action);
-    }
+      
+      const result = gameConversationArea.gameModel.inputAction(action);
 
+      this._players.forEach(player => {
+        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+      });
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+      return result;
+    }
     return false;
   }
 
@@ -207,8 +213,15 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+
+      const result =  gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
+
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
-      return gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
+      this._players.forEach(player => {
+        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+      });
+
+      return result;
     }
 
     return false;
@@ -218,8 +231,14 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if(gameConversationArea) {
+      const result = gameConversationArea.gameModel.removePlayer(playerID);
+
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
-      return gameConversationArea.gameModel.removePlayer(playerID);
+      this._players.forEach(player => {
+        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+      });
+
+      return result;
     }
 
     return false;
@@ -233,10 +252,12 @@ export default class CoveyTownController {
  * @returns 
  */
   getGameState(conversationAreaLabel: string): GameState {
+    console.log("getting game state");
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+      console.log(gameConversationArea.gameModel.getState());
       return gameConversationArea.gameModel.getState();
     }
 
@@ -257,8 +278,14 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
-      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       gameConversationArea.gameModel.setSessionActive(true);
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+      this._players.forEach(player => {
+        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+      });
+
       return true;
     }
 
@@ -313,6 +340,9 @@ export default class CoveyTownController {
     }
     conversationArea.gameModel = new WordleGame();
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
+    this._players.forEach(player => {
+      this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+    });
     return true;
   }
 

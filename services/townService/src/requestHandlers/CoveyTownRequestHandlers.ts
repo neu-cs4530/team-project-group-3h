@@ -274,7 +274,7 @@ export function gameInputActionHandler(_requestData: UpdateGameRequest) : Respon
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
   if (!townController?.getSessionByToken(_requestData.sessionToken)){
     return {
-      isOK: false, response: {}, message: `Unable send game action within conversation area ${_requestData.conversationAreaLabel}`,
+      isOK: false, response: {}, message: `Invalid Session Token | Unable send game action within conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
   const success = townController.inputGameAction(_requestData.conversationAreaLabel, _requestData.gameAction);
@@ -395,9 +395,5 @@ export function townSubscriptionHandler(socket: Socket): void {
   // location, inform the CoveyTownController
   socket.on('playerMovement', (movementData: UserLocation) => {
     townController.updatePlayerLocation(s.player, movementData);
-  });
-
-  socket.on('playerInputAction', (action: GameAction, conversationAreaLabel: string) => {
-    townController.inputGameAction(conversationAreaLabel, action);
   });
 }

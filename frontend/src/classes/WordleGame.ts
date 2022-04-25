@@ -1,4 +1,4 @@
-import { GameAction, GameState, Guess, TeamState } from '../CoveyTypes';
+import { GameAction, GameState, Guess, TeamState } from './GameTypes';
 import IGame from './IGame';
 import Player from './Player';
 import WordHandler from './WordHandler';
@@ -63,11 +63,11 @@ export default class WordleGame implements IGame {
 
   removePlayer(playerID: string): boolean {
     // if (!this.enabled) return false;
-    let bSize = this.blueTeam.length;
-    let rSize = this.redTeam.length;
+    const bSize = this.blueTeam.length;
+    const rSize = this.redTeam.length;
     this.blueTeam = this.blueTeam.filter((player) => player !== playerID);
     this.redTeam = this.redTeam.filter((player) => player !== playerID);
-    return (bSize != this.blueTeam.length || rSize != this.redTeam.length);
+    return (bSize !== this.blueTeam.length || rSize !== this.redTeam.length);
   }
     
   /*
@@ -105,7 +105,7 @@ export default class WordleGame implements IGame {
       teamOneState: redTeamState,
       teamTwoState: blueTeamState,
       winner: this.winner ? this.winner : ' ',
-      isActive: this.enabled,
+      isActive: this.active,
     };
     return gameState;
   }

@@ -13,19 +13,13 @@ export default interface IGame {
      * @param player 
      * @param teamToJoin 
      */
-  addPlayerToTeam(player: Player, teamToJoin: number): void;
+  addPlayerToTeam(playerID: string, teamToJoin: number): void;
 
   /**
      * Removes a player from the Game
      * @param playerID 
      */
   removePlayer(playerID: string): void;
-
-  /**
-     * Starts or stops the game
-     * @param isGameStarted 
-     */
-  gameActive(isGameStarted: boolean): void;
 
   /**
      * Inputs an Action

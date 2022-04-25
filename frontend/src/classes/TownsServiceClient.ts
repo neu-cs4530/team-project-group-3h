@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
-import { GameAction, GameType } from './GameTypes';
+import { GameAction, GameState, GameType } from './GameTypes';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -68,6 +68,10 @@ export interface TownDeleteRequest {
   coveyTownPassword: string;
 }
 
+export interface GameStateResponse {
+  state: GameState;
+}
+
 /**
  * Payload sent by the client to update a Town.
  * N.B., JavaScript is terrible, so:
@@ -101,7 +105,6 @@ export interface ConversationCreateRequest {
  */
  export interface GetGameStateRequest {
   coveyTownID: string;
-  //sessionToken: string;
   conversationAreaLabel: string;
 }
 
@@ -246,8 +249,8 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  async getGameState(requestData: GetGameStateRequest) : Promise<void>{
-    const responseWrapper = await this._axios.get(`/towns/${requestData.coveyTownID}/gamestate`,{params: requestData});
+  async getGameState(requestData: GetGameStateRequest) : Promise<GameStateResponse>{
+    const responseWrapper = await this._axios.get(`/towns/${requestData.coveyTownID}/gamestate/${requestData.conversationAreaLabel}`,{params: requestData});
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 

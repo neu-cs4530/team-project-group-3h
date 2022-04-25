@@ -47,7 +47,10 @@ export default function GameWindow(): JSX.Element {
             case 'lobby': {
                 return <VStack align='center'>
                     <WordleLobby />
-                    <Button onClick={() => setCurrentPhase('game')} colorScheme='green' size='sm'>Start Game</Button>
+                    <Button onClick={async () => {
+                        setCurrentPhase('game');
+                        await apiClient.startGame({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: currentConversationArea.label});
+                        }} colorScheme='green' size='sm'>Start Game</Button>
                 </VStack>
             }
             case 'game': {
