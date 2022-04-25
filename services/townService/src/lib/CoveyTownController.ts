@@ -216,10 +216,11 @@ export default class CoveyTownController {
 
       const result =  gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
 
-      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       this._players.forEach(player => {
         this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
       });
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
 
       return result;
     }
@@ -233,10 +234,11 @@ export default class CoveyTownController {
     if(gameConversationArea) {
       const result = gameConversationArea.gameModel.removePlayer(playerID);
 
-      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       this._players.forEach(player => {
         this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
       });
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
 
       return result;
     }
@@ -280,11 +282,12 @@ export default class CoveyTownController {
     if (gameConversationArea) {
       gameConversationArea.gameModel.setSessionActive(true);
 
-      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
-
       this._players.forEach(player => {
         this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
       });
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
 
       return true;
     }
@@ -339,10 +342,10 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
-    this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     this._players.forEach(player => {
       this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
     });
+    this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }
 

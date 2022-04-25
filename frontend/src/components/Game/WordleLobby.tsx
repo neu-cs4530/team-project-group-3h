@@ -14,12 +14,12 @@ import usePlayersInTown from '../../hooks/usePlayersInTown';
  * @returns A JSX Element representing the Wordle Lobby
  * 
  */
-export default function WordleLobby(): JSX.Element {
+export default function WordleLobby(props: {area: ConversationArea}): JSX.Element {
   const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
   const players = usePlayersInTown();
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
-  const [element, setElement] = useState(<></>);
+  
 
   async function addPlayer(convoArea: ConversationArea, teamNumber: number) {
     const myPlayer = players.find((player) => player.id === playerID);
@@ -78,8 +78,9 @@ export default function WordleLobby(): JSX.Element {
     }); */
     return constructLobby(getGameState(currentConversationArea), currentConversationArea);
   } // else {
+  
 
-  return element;
+  return constructLobby(getGameState(props.area), props.area);
   // }
 }
 

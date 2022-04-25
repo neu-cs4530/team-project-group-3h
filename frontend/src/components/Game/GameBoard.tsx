@@ -96,21 +96,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
   const [input, setInput] = useState('');
-  const [game, setGame] = useState(currentConversationArea?.game);
   const [element, setElement] = useState(<></>);
-
-  useEffect(() => {
-    const setGameToNewGame = (newGame: IGame) => {
-      if(currentConversationArea)
-        currentConversationArea.game = newGame;
-    };
-    const listener: ConversationAreaListener = {onGameChange: setGameToNewGame};
-    currentConversationArea?.addListener(listener);
-
-    return function cleanUp() {
-      currentConversationArea?.removeListener(listener);
-    };
-  }, [game]);
 
   function getGameState(convoArea: ConversationArea): GameState {
     // const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, conversationAreaLabel: convoArea.label });
