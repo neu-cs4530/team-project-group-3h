@@ -68,6 +68,9 @@ export interface TownDeleteRequest {
   coveyTownPassword: string;
 }
 
+/**
+ * Response from the server for a Game State request
+ */
 export interface GameStateResponse {
   state: GameState;
 }
@@ -84,12 +87,6 @@ export interface TownUpdateRequest {
   isPubliclyListed?: boolean;
 }
 
-export interface ConversationCreateRequest {
-  coveyTownID: string;
-  sessionToken: string;
-  conversationArea: ServerConversationArea;
-}
-
  /**
  * The format for a request to remove a player from the game
  */
@@ -101,7 +98,7 @@ export interface ConversationCreateRequest {
 }
 
 /**
- * The format for a request to update a game
+ * The format for a request to get the game state
  */
  export interface GetGameStateRequest {
   coveyTownID: string;
@@ -141,10 +138,6 @@ export interface ConversationCreateRequest {
   conversationAreaLabel: string;
 }
 
-
-
-
-
 /**
  * The format for a request to start a game
  */
@@ -172,6 +165,9 @@ export interface ResponseEnvelope<T> {
   response?: T;
 }
 
+/**
+ * The format for information about this town
+ */
 export type CoveyTownInfo = {
   friendlyName: string;
   coveyTownID: string;
@@ -254,7 +250,6 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  
   async startGame(requestData: StartGameRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/startGame`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);

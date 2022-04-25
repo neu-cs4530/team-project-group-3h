@@ -22,7 +22,6 @@ export default function usePlayerConversationArea() : ConversationArea | undefin
         const movementDispatcher = (player: ServerPlayer) => {
             if (player._id === playerID && player.location.conversationLabel !== currentConversationArea?.label) {
                 setCurrentConversationArea(conversationAreas.find((area : ConversationArea) => area.label === player.location.conversationLabel));
-                // console.log(currentConversationArea);
             }
         };
         playerMovementCallbacks.push(movementDispatcher);

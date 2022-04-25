@@ -2,7 +2,6 @@ import { Button, Stack, VStack, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import ConversationArea from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
-import IGame from '../../classes/IGame';
 import { GameJoinTeamRequest } from '../../classes/TownsServiceClient';
 import WordleGame from '../../classes/WordleGame';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
@@ -20,7 +19,6 @@ export default function WordleLobby(props: {area: ConversationArea}): JSX.Elemen
   const [playerID] = useState(useCoveyAppState().myPlayerID);
   const currentConversationArea = usePlayerConversationArea();
   
-
   async function addPlayer(convoArea: ConversationArea, teamNumber: number) {
     const myPlayer = players.find((player) => player.id === playerID);
     if (myPlayer) {
@@ -43,8 +41,6 @@ export default function WordleLobby(props: {area: ConversationArea}): JSX.Elemen
   }
 
   function getGameState(convoArea: ConversationArea) {
-    // const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, conversationAreaLabel: convoArea.label });
-    // return stateInfo.state;
     const newGame = new WordleGame();
     Object.assign(newGame, convoArea.game);
     return (newGame as WordleGame).getState() as GameState;
@@ -56,7 +52,6 @@ export default function WordleLobby(props: {area: ConversationArea}): JSX.Elemen
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
     const redButtonText = (redTeam) ? 'Leave Red Team' : 'Join Red Team';
     const blueButtonText = (blueTeam) ? 'Leave Blue Team' : 'Join Blue Team';
-    // let elementResult;
     const elementResult = (
       <VStack align='center'>
         <h1> WORDLE </h1>
@@ -73,15 +68,10 @@ export default function WordleLobby(props: {area: ConversationArea}): JSX.Elemen
   }
 
   if (currentConversationArea?.game) {
-    /* getGameState(currentConversationArea).then((gameState) => {
-      constructLobby(gameState, currentConversationArea);
-    }); */
     return constructLobby(getGameState(currentConversationArea), currentConversationArea);
-  } // else {
+  } 
   
-
   return constructLobby(getGameState(props.area), props.area);
-  // }
 }
 
 

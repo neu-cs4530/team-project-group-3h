@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
 import ConversationArea, { ConversationAreaListener } from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
-import IGame from '../../classes/IGame';
 import WordleGame from '../../classes/WordleGame';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
@@ -88,8 +87,10 @@ function AllRows(props: AllRowsProps): JSX.Element {
 }
 
 /**
- * Should show the game board and its current state to both spectators and game players. Should also show a Wordle title bar,
- * the player's state, and an input tab for players to input guesses when it is their team's turn.
+ * The entire game board for Wordle, consisting of both the teams boards, with partial information if you are on a team or full information
+ * for spectators. Includes an input box that is enabled for those on a team.
+ * @param props GameBoardProps with a boolean gameover representing whether the game has ended.
+ * @returns A JSX.Element representing the entire game board.
  */
 export default function GameBoard(props: GameBoardProps): JSX.Element {
   const { apiClient, sessionToken, currentTownID } = useCoveyAppState();
@@ -98,10 +99,9 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   const currentConversationArea = usePlayerConversationArea();
   const [input, setInput] = useState('');
   const [element, setElement] = useState(<></>);
+  console.log(currentConversationArea);
 
   function getGameState(convoArea: ConversationArea): GameState {
-    // const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, conversationAreaLabel: convoArea.label });
-    // return stateInfo.state;
     const newGame = new WordleGame();
     Object.assign(newGame, convoArea.game);
     return (newGame as WordleGame).getState() as GameState;
@@ -154,9 +154,6 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
 
   // ensure the game session is active, then display the game board
   if (currentConversationArea?.game) {
-    /* getGameState(currentConversationArea).then((gameState) => {
-      constructBoards(gameState);
-    }); */
     return constructBoards(getGameState(currentConversationArea));
   }
 
