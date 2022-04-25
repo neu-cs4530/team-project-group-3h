@@ -192,9 +192,6 @@ export default class CoveyTownController {
       
       const result = gameConversationArea.gameModel.inputAction(action);
 
-      this._players.forEach(player => {
-        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
-      });
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
 
       return result;
@@ -216,10 +213,6 @@ export default class CoveyTownController {
 
       const result =  gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
 
-      this._players.forEach(player => {
-        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
-      });
-
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
 
       return result;
@@ -233,10 +226,6 @@ export default class CoveyTownController {
 
     if(gameConversationArea) {
       const result = gameConversationArea.gameModel.removePlayer(playerID);
-
-      this._players.forEach(player => {
-        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
-      });
 
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
 
@@ -342,9 +331,6 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
-    this._players.forEach(player => {
-      this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
-    });
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }

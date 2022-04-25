@@ -22,6 +22,7 @@ export default function GameWindow(): JSX.Element {
 
     async function handleWordleClick(convoArea : ConversationArea) {
         try {
+            if(!currentConversationArea?.game)
             await apiClient.createGame({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label, gameID: "wordle" });
             setCurrentPhase('lobby');
         }
