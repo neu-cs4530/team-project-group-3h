@@ -189,6 +189,7 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       return gameConversationArea.gameModel.inputAction(action);
     }
 
@@ -206,6 +207,7 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       return gameConversationArea.gameModel.addPlayerToTeam(player, team);
     }
 
@@ -218,6 +220,7 @@ export default class CoveyTownController {
     });
 
     if(gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       return gameConversationArea.gameModel.removePlayer(playerID);
     }
 
@@ -235,6 +238,7 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       return gameConversationArea.gameModel.getState();
     }
 
@@ -255,6 +259,7 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       gameConversationArea.gameModel.setSessionActive(true);
       return true;
     }

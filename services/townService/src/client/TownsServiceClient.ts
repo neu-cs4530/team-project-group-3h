@@ -100,7 +100,6 @@ export interface GameJoinTeamResponse {
  */
 export interface GetGameStateRequest {
   coveyTownID: string;
-  sessionToken: string;
   conversationAreaLabel: string;
 }
 

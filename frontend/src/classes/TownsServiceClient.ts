@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
+import { GameAction, GameType } from './GameTypes';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -100,7 +101,7 @@ export interface ConversationCreateRequest {
  */
  export interface GetGameStateRequest {
   coveyTownID: string;
-  sessionToken: string;
+  //sessionToken: string;
   conversationAreaLabel: string;
 }
 
@@ -136,6 +137,10 @@ export interface ConversationCreateRequest {
   teamNumber: number;
   conversationAreaLabel: string;
 }
+
+
+
+
 
 /**
  * The format for a request to start a game
@@ -242,7 +247,7 @@ export default class TownsServiceClient {
   }
 
   async getGameState(requestData: GetGameStateRequest) : Promise<void>{
-    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/gamestate`, requestData);
+    const responseWrapper = await this._axios.get(`/towns/${requestData.coveyTownID}/gamestate`,{params: requestData});
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 

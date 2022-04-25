@@ -202,12 +202,11 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * gets the gameState
    */
-  app.post('/towns/:townID/gamestate', express.json(), async (req, res) => {
+  app.get('/towns/:townID/gamestate/:conversationAreaLabel/', express.json(), async (req, res) => {
     try {
       const result = gameStateHandler({
         coveyTownID: req.params.townID,
-        sessionToken: req.body.sessionToken,
-        conversationAreaLabel: req.body.conversationAreaLabel,
+        conversationAreaLabel: req.params.conversationAreaLabel,
       });
       res.status(StatusCodes.OK)
         .json(result);

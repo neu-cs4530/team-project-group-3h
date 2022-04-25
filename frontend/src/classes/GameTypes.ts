@@ -11,7 +11,7 @@ export type GameState = {
   isActive: boolean;
 };
 
-export type GameType = "wordle" | "tictactoe";
+export type GameType = "wordle";
 
 export type TeamState = {
   teamMembers: string[];
@@ -19,7 +19,6 @@ export type TeamState = {
   attemptsLeft?: number;
 };
 
-export type GameType = 'wordle' | 'tictactoe';
 export type Guess = {
   word: string;
   guessResult: number[];

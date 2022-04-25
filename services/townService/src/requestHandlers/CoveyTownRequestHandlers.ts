@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Socket } from 'socket.io';
 import Player from '../types/Player';
-import { ChatMessage, CoveyTownList, GameState, UserLocation } from '../CoveyTypes';
+import { ChatMessage, CoveyTownList, GameAction, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import { ConversationAreaCreateRequest, CreateGameRequest, GameJoinTeamRequest, GameLeaveTeamRequest, GetGameStateRequest, ServerConversationArea, StartGameRequest, UpdateGameRequest } from '../client/TownsServiceClient';
@@ -244,9 +244,9 @@ export function gameStartHandler(_requestData: StartGameRequest) : ResponseEnvel
 export function gameStateHandler(_requestData: GetGameStateRequest) : ResponseEnvelope<Record<string, GameState>> {
   const townsStore = CoveyTownsStore.getInstance();
   const townController = townsStore.getControllerForTown(_requestData.coveyTownID);
-  if (!townController?.getSessionByToken(_requestData.sessionToken)){
+  if (!townController){
     return {
-      isOK: false, response: {}, message: `Unable to get state within conversation area ${_requestData.conversationAreaLabel}`,
+      isOK: false, response: {}, message: `Unable to get town for conversation area ${_requestData.conversationAreaLabel}`,
     };
   }
   const result = townController.getGameState(_requestData.conversationAreaLabel);
@@ -390,5 +390,9 @@ export function townSubscriptionHandler(socket: Socket): void {
   // location, inform the CoveyTownController
   socket.on('playerMovement', (movementData: UserLocation) => {
     townController.updatePlayerLocation(s.player, movementData);
+  });
+
+  socket.on('playerInputAction', (action: GameAction, conversationAreaLabel: string) => {
+    townController.inputGameAction(conversationAreaLabel, action);
   });
 }
