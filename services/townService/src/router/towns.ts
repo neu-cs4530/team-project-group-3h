@@ -158,7 +158,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   });
 
   /**
-   * Create a game
+   * starts a game
    */
   app.post('/towns/:townID/startGame', express.json(), async (req, res) => {
     try {
@@ -203,8 +203,34 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * gets the gameState
    */
+  //    app.get('/towns/:requestData/gamestate', express.json(), async (req, res) => {
+  //   try {
+  //     console.log('Hello inside gameState-----------------------------------------------------');
+  //     const parsedData = JSON.parse(req.params.requestData);
+  //     console.log('After parsing:');
+  //     console.log(parsedData);
+
+  //     const gameState: GetGameStateRequest = {
+  //       coveyTownID: parsedData.coveyTownID,
+  //       sessionToken: parsedData.sessionToken,
+  //       conversationAreaLabel: parsedData.conversationAreaLabel
+  //     };
+  //     console.log('Get Game state Request');
+  //     console.log(gameState);
+  //     const result = gameStateHandler(gameState);
+  //     res.status(StatusCodes.OK)
+  //       .json(result);
+  //   } catch (err) {
+  //     logError(err);
+  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+  //       .json({
+  //         message: 'Internal server error, please see log in server for more details',
+  //       });
+  //   }
+  // });
   app.post('/towns/:townID/gamestate', express.json(), async (req, res) => {
     try {
+      console.log('Hello inside gameState');
       const result = gameStateHandler({
         coveyTownID: req.params.townID,
         sessionToken: req.body.sessionToken,
