@@ -224,7 +224,7 @@ export default class CoveyTownController {
   removePlayerFromGameTeam(conversationAreaLabel: string, playerID: string): boolean {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
-    if(gameConversationArea) {
+    if (gameConversationArea) {
       const result = gameConversationArea.gameModel.removePlayer(playerID);
 
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
@@ -243,12 +243,10 @@ export default class CoveyTownController {
  * @returns 
  */
   getGameState(conversationAreaLabel: string): GameState {
-    console.log("getting game state");
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
       this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
-      console.log(gameConversationArea.gameModel.getState());
       return gameConversationArea.gameModel.getState();
     }
 
@@ -257,6 +255,7 @@ export default class CoveyTownController {
       teamTwoState: undefined,
       winner: 'none',
       isActive: false,
+      isEnabled: false,
     };
   }
 
@@ -270,6 +269,8 @@ export default class CoveyTownController {
 
     if (gameConversationArea) {
       gameConversationArea.gameModel.setSessionActive(true);
+      gameConversationArea.gameModel.setAddPlayerEnabled(false);
+
 
       this._players.forEach(player => {
         this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
@@ -287,7 +288,7 @@ export default class CoveyTownController {
   /**
    * Creates a new conversation area in this town if there is not currently an active
    * conversation with the same label.
-   *
+
    * Adds any players who are in the region defined by the conversation area to it.
    *
    * Notifies any CoveyTownListeners that the conversation has been updated
@@ -331,6 +332,7 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
+    conversationArea.gameModel.setAddPlayerEnabled(true);
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }

@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import { GameAction, GameState, GameType, UserLocation } from '../CoveyTypes';
 import IGame from '../types/IGame';
-import Player from '../types/Player';
 
 
 export type ServerPlayer = { _id: string, _userName: string, location: UserLocation };

@@ -230,7 +230,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         sessionToken: req.body.sessionToken,
         playerID: req.body.playerID,
         teamNumber: req.body.teamNumber,
-        conversationAreaLabel: req.body.conversationAreaLabel
+        conversationAreaLabel: req.body.conversationAreaLabel,
       };
       const result = gameAddPlayerHandler(teamJoinRequest);
       res.status(StatusCodes.OK)

@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Socket } from 'socket.io';
 import Player from '../types/Player';
-import { ChatMessage, CoveyTownList, GameAction, GameState, UserLocation } from '../CoveyTypes';
+import { ChatMessage, CoveyTownList, GameState, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import { ConversationAreaCreateRequest, CreateGameRequest, GameJoinTeamRequest, GameLeaveTeamRequest, GetGameStateRequest, ServerConversationArea, StartGameRequest, UpdateGameRequest } from '../client/TownsServiceClient';
@@ -296,7 +296,6 @@ export function gameAddPlayerHandler(_requestData: GameJoinTeamRequest) : Respon
   }
 
   const success = townController.addPlayerToGameTeam(_requestData.conversationAreaLabel, _requestData.playerID, _requestData.teamNumber);
-  console.log(`Is success: ${success}`);
 
   return {
     isOK: success,

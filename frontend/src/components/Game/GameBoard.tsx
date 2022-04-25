@@ -1,4 +1,5 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
+import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
 import ConversationArea, { ConversationAreaListener } from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
@@ -79,7 +80,7 @@ function AllRows(props: AllRowsProps): JSX.Element {
 
   if (guessRows) {
     for (let i = 0; i < 6; i += 1) {
-      allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow />);
+      allRows.push((guessRows.length > i) ? guessRows[i] : <BlankRow key={nanoid()}/>);
     }
   }
 
@@ -142,6 +143,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
             if (e.key === 'Enter' && currentConversationArea) {
               apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
                 gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
+              setInput('');
             }
           }}
           isDisabled={(!redTeam && !blueTeam)} />

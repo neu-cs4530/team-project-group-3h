@@ -9,6 +9,7 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
   beforeEach(() => {
     model = new WordleGame();
     model.setSessionActive(true);
+    model.setAddPlayerEnabled(true);
   });
 
   it('should have a title of Wordle', () => {
@@ -16,9 +17,9 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
   });
 
   it('should set session to enabled', () => {
-    model.setSessionActive(false);
+    model.setAddPlayerEnabled(false);
     expect(model.addPlayerToTeam(player.id, 1)).toBe(false);
-    model.setSessionActive(true);
+    model.setAddPlayerEnabled(true);
     expect(model.addPlayerToTeam(player.id, 1)).toBe(true);
   });
 
@@ -59,10 +60,10 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
   });
 
   it('should set active to true in gameState', () => {
-    //model.gameActive(false);
+    model.setSessionActive(false);
     expect(model.getState().isActive).toBe(false);
-    // model.gameActive(true);
-    // expect(model.getState().isActive).toBe(true);
+    model.setSessionActive(true);
+    expect(model.getState().isActive).toBe(true);
   });
 
   it('should have inputAction return false if the game is not active yet', () => {
@@ -161,6 +162,7 @@ describe('Tests pertaining to the WordleGame implementation of IGame', () => {
       teamTwoState: blueTeamState, 
       winner: ' ',
       isActive: true,
+      isEnabled: true,
     };
     expect(model.getState()).toStrictEqual(currentGameState);
     model.addPlayerToTeam(player.id, 1);
