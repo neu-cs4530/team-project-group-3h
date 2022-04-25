@@ -213,6 +213,8 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('conversationUpdated', (_conversationArea: ServerConversationArea) => {
+        console.log("convo updated");
+        setConversationAreas(conversationAreas);
         const updatedConversationArea = localConversationAreas.find(
           c => c.label === _conversationArea.label,
         );
