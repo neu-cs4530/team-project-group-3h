@@ -3,16 +3,10 @@ import type Player from './Player';
 
 export default interface IGame {
   /**
-     * Activates/Deactivates a Game Session. Can only add inputs if session has started
+     * Activates/Deactivates a Game Session
      * @param isSessionStarted 
      */
   setSessionActive(isSessionStarted: boolean): void;
-
-  /**
-   * Enables a Wordle Game to allow player editing. Can add or remove players once canAddPlayers is true
-   * @param canAddPlayers 
-   */
-  setAddPlayerEnabled(canAddPlayers: boolean): void;
 
   /**
      * Adds a player to a Game Team

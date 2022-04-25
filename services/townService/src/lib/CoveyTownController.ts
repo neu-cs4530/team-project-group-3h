@@ -241,7 +241,6 @@ export default class CoveyTownController {
       teamTwoState: undefined,
       winner: 'none',
       isActive: false,
-      isEnabled: false,
     };
   }
 
@@ -308,7 +307,6 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
-    conversationArea.gameModel.setAddPlayerEnabled(true);
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }

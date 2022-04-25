@@ -46,8 +46,6 @@ export default function WordleLobby(): JSX.Element {
   }
 
   function constructLobby(gameState : GameState, convoArea : ConversationArea) {
-    console.log('Inside constructLobby function');
-    console.log(gameState);
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
     const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
     const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
@@ -67,23 +65,11 @@ export default function WordleLobby(): JSX.Element {
     );
   }
 
-  if (!currentConversationArea) return (<></>);
-  if (!currentConversationArea.game) return (<></>);
-  console.log('Game Conversation Area is active')
-  console.log('The problem is here-------------------------------------------------------------------')
-  getGameState(currentConversationArea).then((gameState) => {
-    console.log('About to construct lobby');
-    constructLobby(gameState, currentConversationArea);
-  });
-  
-
-  // if (currentConversationArea.game) {
-  //   console.log('Game Conversation Area is active')
-  //   getGameState(currentConversationArea).then((gameState) => {
-  //     console.log('About to construct lobby')
-  //     constructLobby(gameState, currentConversationArea);
-  //   });
-  // }
+  if (currentConversationArea?.game) {
+    getGameState(currentConversationArea).then((gameState) => {
+      constructLobby(gameState, currentConversationArea);
+    });
+  }
 
   return element;
 }

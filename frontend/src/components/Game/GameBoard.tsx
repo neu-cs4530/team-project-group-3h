@@ -132,12 +132,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
         <Input
           size='sm'
           value={input}
-          onChange={(e) => {
-            console.log(`The input is: ${input}`);
-            console.log('Something happened');
-            console.log(e.currentTarget);
-            setInput(e.currentTarget.value)
-          }}
+          onChange={(e) => setInput(e.currentTarget.value)}
           onKeyPress={e => {
             if (e.key === 'Enter' && currentConversationArea) {
               apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 

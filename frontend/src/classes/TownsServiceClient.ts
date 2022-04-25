@@ -250,12 +250,7 @@ export default class TownsServiceClient {
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/gamestate`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
-  // async getGameState(requestData: GetGameStateRequest) : Promise<GameStateResponse>{
-  //   console.log('In axios function-----------------------------------------------------');
-  //   const queriedString: string = JSON.stringify(requestData);
-  //   const responseWrapper = await this._axios.get<ResponseEnvelope<GameStateResponse>>(`/towns/${queriedString}/gamestate`);
-  //   return TownsServiceClient.unwrapOrThrowError(responseWrapper);
-  // }
+
   
   async startGame(requestData: StartGameRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/startGame`, requestData);
