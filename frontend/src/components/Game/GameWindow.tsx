@@ -31,6 +31,16 @@ export default function GameWindow(): JSX.Element {
         setCurrentPhase('lobby');
     }
 
+    async function startTheGame(convoArea : ConversationArea) {
+        console.log('The problem is handle wordle click')
+        try {
+            await apiClient.startGame({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label});
+        }
+        catch(err) {
+            console.error(err);
+        }
+    }
+
     // if the player is in an active conversation area, we want to display our game window
     if (currentConversationArea && currentConversationArea?.topic !== NO_TOPIC_STRING) {
         switch (currentPhase) {
@@ -50,7 +60,10 @@ export default function GameWindow(): JSX.Element {
                 console.log('Currently Listing Wordle Start Game Options')
                 return <VStack align='center'>
                     <WordleLobby />
-                    <Button onClick={() => setCurrentPhase('game')} colorScheme='green' size='sm'>Start Game</Button>
+                    <Button onClick={() => {
+                        startTheGame(currentConversationArea);
+                        setCurrentPhase('game');
+                    }} colorScheme='green' size='sm'>Start Game</Button>
                 </VStack>
             }
             case 'game': {

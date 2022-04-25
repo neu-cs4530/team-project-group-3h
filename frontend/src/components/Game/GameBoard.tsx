@@ -1,7 +1,8 @@
 import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import ConversationArea from '../../classes/ConversationArea';
-import { GameState } from '../../classes/GameTypes';
+import { GameAction, GameState } from '../../classes/GameTypes';
+import { UpdateGameRequest } from '../../classes/TownsServiceClient';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 
@@ -96,10 +97,76 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   const [input, setInput] = useState('');
   const [element, setElement] = useState(<></>);
 
-  async function getGameState(convoArea: ConversationArea): Promise<GameState> {
-    const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
-    return stateInfo.state;
-  }
+  // async function getGameState(convoArea: ConversationArea): Promise<GameState> {
+  //   const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label });
+  //   return stateInfo.state;
+  // }
+
+  const [currentGameState, setGameState] = useState<GameState>({
+    teamOneState: undefined,
+    teamTwoState: undefined,
+    winner: ' ',
+    isActive: false,
+  });
+  // const [element, setElement] = useState(<></>);
+  let toRender: JSX.Element = (<> </>);
+  
+  useEffect(() => {
+    async function getGameState() {
+      if (currentConversationArea) {
+        const stateInfo = await apiClient.getGameState({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: currentConversationArea.label });
+        setGameState(stateInfo.state);
+      }
+    }
+    getGameState();
+  });
+
+  // function constructBoards(gameState: GameState) {
+  //   const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
+  //   const blueTeam = gameState.teamTwoState?.teamMembers.includes(playerID);
+  //   const redGuesses = gameState.teamOneState?.guesses;
+  //   const blueGuesses = gameState.teamTwoState?.guesses;
+  //   const yourTeamHeader = (!redTeam && !blueTeam) ? 'You are Spectating!' : 'You are on a team!';
+  //   const displayText = (gameover) ? 'Game Over' : yourTeamHeader;
+  //   const redRows = redGuesses?.map((guess, index) =>
+  //     <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!blueTeam) || gameover} />);
+  //   const blueRows = blueGuesses?.map((guess, index) =>
+  //     <WordleRow key={index.toString()} guessArray={Array.from(guess.word)} letterColors={guess.guessResult} showLetters={(!redTeam) || gameover} />);
+  //   const redBoard = <AllRows guessRows={redRows} />;
+  //   const blueBoard = <AllRows guessRows={blueRows} />;
+
+  //   setElement(
+  //     <VStack padding={4} align='center'>
+  //       <Text fontSize='xl'>Wordle</Text>
+  //       <HStack spacing='24px'>
+  //         <VStack>
+  //           <Text fontSize='sm'>Red Board</Text>
+  //           {redBoard}
+  //         </VStack>
+  //         <VStack>
+  //           <Text fontSize='sm'>Blue Board</Text>
+  //           {blueBoard}
+  //         </VStack>
+  //       </HStack>
+  //       <Text fontSize='lg'>{displayText}</Text>
+  //       <Input
+  //         size='sm'
+  //         value={input}
+  //         onChange={(e) => {
+  //           console.log(`The input is: ${input}`);
+  //           console.log('Something happened');
+  //           console.log(e.currentTarget);
+  //           setInput(e.currentTarget.value)
+  //         }}
+  //         onKeyPress={e => {
+  //           if (e.key === 'Enter' && currentConversationArea) {
+  //             apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
+  //               gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
+  //           }
+  //         }}
+  //         isDisabled={(!redTeam && !blueTeam)} />
+  //     </VStack>);
+  // }
 
   function constructBoards(gameState: GameState) {
     const redTeam = gameState.teamOneState?.teamMembers.includes(playerID);
@@ -115,7 +182,7 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
     const redBoard = <AllRows guessRows={redRows} />;
     const blueBoard = <AllRows guessRows={blueRows} />;
 
-    setElement(
+    return(
       <VStack padding={4} align='center'>
         <Text fontSize='xl'>Wordle</Text>
         <HStack spacing='24px'>
@@ -140,8 +207,15 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
           }}
           onKeyPress={e => {
             if (e.key === 'Enter' && currentConversationArea) {
-              apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
-                gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
+              console.log(`The input is: ${input}`);
+              const gameAction: GameAction = { actionString: input, playerID, team: redTeam? 1 : 2}
+              const updateRequest: UpdateGameRequest = {
+                coveyTownID: currentTownID,
+                sessionToken, 
+                conversationAreaLabel: currentConversationArea.label,
+                gameAction
+              }
+              apiClient.inputGameAction(updateRequest);
             }
           }}
           isDisabled={(!redTeam && !blueTeam)} />
@@ -149,11 +223,14 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   }
 
   // ensure the game session is active, then display the game board
-  if (currentConversationArea?.game) {
-    getGameState(currentConversationArea).then((gameState) => {
-      constructBoards(gameState);
-    });
-  }
+  // if (currentConversationArea?.game) {
+  //   getGameState(currentConversationArea).then((gameState) => {
+  //     constructBoards(gameState);
+  //   });
+  // }
+  if (!currentConversationArea) return (<></>);
+  if (!currentConversationArea.game) return (<></>);
+  toRender = constructBoards(currentGameState);
 
-  return element;
+  return toRender;
 }
