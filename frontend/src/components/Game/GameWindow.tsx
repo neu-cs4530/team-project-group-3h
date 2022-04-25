@@ -32,7 +32,6 @@ export default function GameWindow(): JSX.Element {
     }
 
     async function startTheGame(convoArea : ConversationArea) {
-        console.log('The problem is handle wordle click')
         try {
             await apiClient.startGame({ coveyTownID: currentTownID, sessionToken, conversationAreaLabel: convoArea.label});
         }
@@ -45,7 +44,6 @@ export default function GameWindow(): JSX.Element {
     if (currentConversationArea && currentConversationArea?.topic !== NO_TOPIC_STRING) {
         switch (currentPhase) {
             case 'list': {
-                console.log('Currently Listing Game Options')
                 return (
                     <VStack align='center'>
                         <Text fontSize='lg'>Choose a game to play!</Text>
@@ -57,7 +55,6 @@ export default function GameWindow(): JSX.Element {
                 );
             }
             case 'lobby': {
-                console.log('Currently Listing Wordle Start Game Options')
                 return <VStack align='center'>
                     <WordleLobby />
                     <Button onClick={() => {

@@ -215,8 +215,8 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         sessionToken: parsedData.sessionToken,
         conversationAreaLabel: parsedData.conversationAreaLabel
       };
-      console.log('Get Game state Request');
-      console.log(gameState);
+      // console.log('Get Game state Request');
+      // console.log(gameState);
       const result = gameStateHandler(gameState);
       res.status(StatusCodes.OK)
         .json(result);
@@ -228,24 +228,6 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         });
     }
   });
-  // app.post('/towns/:townID/gamestate', express.json(), async (req, res) => {
-  //   try {
-  //     console.log('Hello inside gameState');
-  //     const result = gameStateHandler({
-  //       coveyTownID: req.params.townID,
-  //       sessionToken: req.body.sessionToken,
-  //       conversationAreaLabel: req.body.conversationAreaLabel,
-  //     });
-  //     res.status(StatusCodes.OK)
-  //       .json(result);
-  //   } catch (err) {
-  //     logError(err);
-  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR)
-  //       .json({
-  //         message: 'Internal server error, please see log in server for more details',
-  //       });
-  //   }
-  // });
 
   /**
  * adds a player to the game
