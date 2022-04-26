@@ -189,9 +189,13 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
-      return gameConversationArea.gameModel.inputAction(action);
-    }
+      
+      const result = gameConversationArea.gameModel.inputAction(action);
 
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+      return result;
+    }
     return false;
   }
 
@@ -202,23 +206,30 @@ export default class CoveyTownController {
    * @param team 
    * @returns 
    */
-  addPlayerToGameTeam(conversationAreaLabel: string, player: Player, team: number): boolean {
+  addPlayerToGameTeam(conversationAreaLabel: string, playerID: string, team: number): boolean {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
-      return gameConversationArea.gameModel.addPlayerToTeam(player, team);
+
+      const result =  gameConversationArea.gameModel.addPlayerToTeam(playerID, team);
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+      return result;
     }
 
     return false;
   }
 
-  removePlayerFromGameTeam(conversationAreaLabel: String, playerID: string): boolean {
-    let gameConversationArea = this._conversationAreas.find((conversationArea) => {
-      return conversationArea.label == conversationAreaLabel;
-    });
+  removePlayerFromGameTeam(conversationAreaLabel: string, playerID: string): boolean {
+    const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
-    if(gameConversationArea) {
-      return gameConversationArea.gameModel.removePlayer(playerID);
+    if (gameConversationArea) {
+      const result = gameConversationArea.gameModel.removePlayer(playerID);
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+      return result;
     }
 
     return false;
@@ -235,6 +246,7 @@ export default class CoveyTownController {
     const gameConversationArea = this._conversationAreas.find((conversationArea) => conversationArea.label === conversationAreaLabel);
 
     if (gameConversationArea) {
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
       return gameConversationArea.gameModel.getState();
     }
 
@@ -243,6 +255,7 @@ export default class CoveyTownController {
       teamTwoState: undefined,
       winner: 'none',
       isActive: false,
+      isEnabled: false,
     };
   }
 
@@ -256,6 +269,16 @@ export default class CoveyTownController {
 
     if (gameConversationArea) {
       gameConversationArea.gameModel.setSessionActive(true);
+      gameConversationArea.gameModel.setAddPlayerEnabled(false);
+
+
+      this._players.forEach(player => {
+        this._listeners.forEach(listener => listener.onPlayerMoved(player as Player));
+      });
+
+      this._listeners.forEach(listener => listener.onConversationAreaUpdated(gameConversationArea as ServerConversationArea));
+
+
       return true;
     }
 
@@ -265,7 +288,7 @@ export default class CoveyTownController {
   /**
    * Creates a new conversation area in this town if there is not currently an active
    * conversation with the same label.
-   *
+
    * Adds any players who are in the region defined by the conversation area to it.
    *
    * Notifies any CoveyTownListeners that the conversation has been updated
@@ -309,6 +332,7 @@ export default class CoveyTownController {
       return false;
     }
     conversationArea.gameModel = new WordleGame();
+    conversationArea.gameModel.setAddPlayerEnabled(true);
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(conversationArea));
     return true;
   }

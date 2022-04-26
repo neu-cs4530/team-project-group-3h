@@ -1,4 +1,4 @@
-import { GameAction, GameState, Guess, TeamState } from '../CoveyTypes';
+import { GameAction, GameState, Guess, TeamState } from './GameTypes';
 import IGame from './IGame';
 import WordHandler from './WordHandler';
 

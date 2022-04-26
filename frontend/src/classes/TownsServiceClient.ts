@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import Player, { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
+import { GameAction, GameState, GameType } from './GameTypes';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -68,6 +69,13 @@ export interface TownDeleteRequest {
 }
 
 /**
+ * Response from the server for a Game State request
+ */
+export interface GameStateResponse {
+  state: GameState;
+}
+
+/**
  * Payload sent by the client to update a Town.
  * N.B., JavaScript is terrible, so:
  * if(!isPubliclyListed) -> evaluates to true if the value is false OR undefined, use ===
@@ -77,12 +85,6 @@ export interface TownUpdateRequest {
   coveyTownPassword: string;
   friendlyName?: string;
   isPubliclyListed?: boolean;
-}
-
-export interface ConversationCreateRequest {
-  coveyTownID: string;
-  sessionToken: string;
-  conversationArea: ServerConversationArea;
 }
 
  /**
@@ -96,11 +98,10 @@ export interface ConversationCreateRequest {
 }
 
 /**
- * The format for a request to update a game
+ * The format for a request to get the game state
  */
  export interface GetGameStateRequest {
   coveyTownID: string;
-  sessionToken: string;
   conversationAreaLabel: string;
 }
 
@@ -132,7 +133,7 @@ export interface ConversationCreateRequest {
   coveyTownID: string;
   sessionToken: string;
   // coveyUserID: string;
-  player: Player;
+  playerID: string;
   teamNumber: number;
   conversationAreaLabel: string;
 }
@@ -164,6 +165,9 @@ export interface ResponseEnvelope<T> {
   response?: T;
 }
 
+/**
+ * The format for information about this town
+ */
 export type CoveyTownInfo = {
   friendlyName: string;
   coveyTownID: string;
@@ -241,12 +245,11 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  async getGameState(requestData: GetGameStateRequest) : Promise<void>{
-    const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/gamestate`, requestData);
+  async getGameState(requestData: GetGameStateRequest) : Promise<GameStateResponse>{
+    const responseWrapper = await this._axios.get(`/towns/${requestData.coveyTownID}/gamestate/${requestData.conversationAreaLabel}`,{params: requestData});
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  
   async startGame(requestData: StartGameRequest) : Promise<void>{
     const responseWrapper = await this._axios.post(`/towns/${requestData.coveyTownID}/startGame`, requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);

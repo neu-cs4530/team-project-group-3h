@@ -206,6 +206,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             recalculateNearbyPlayers();
           }
         }
+        setConversationAreas(localConversationAreas);
       });
       socket.on('playerDisconnect', (disconnectedPlayer: ServerPlayer) => {
         localPlayers = localPlayers.filter(player => player.id !== disconnectedPlayer._id);
@@ -213,6 +214,8 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('conversationUpdated', (_conversationArea: ServerConversationArea) => {
+        console.log("convo updated");
+        setConversationAreas(conversationAreas);
         const updatedConversationArea = localConversationAreas.find(
           c => c.label === _conversationArea.label,
         );

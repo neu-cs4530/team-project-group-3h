@@ -26,6 +26,7 @@ export type GameState = {
   teamTwoState: TeamState | undefined;
   winner: string;
   isActive: boolean;
+  isEnabled: boolean;
 };
 
 export type GameType = 'wordle' | 'tictactoe';
