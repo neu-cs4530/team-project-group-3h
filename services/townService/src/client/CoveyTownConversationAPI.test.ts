@@ -10,6 +10,7 @@ import addTownRoutes from '../router/towns';
 import * as requestHandlers from '../requestHandlers/CoveyTownRequestHandlers';
 import { createConversationForTesting } from './TestUtils';
 import TownsServiceClient, { ServerConversationArea } from './TownsServiceClient';
+import WordleGame from '../types/WordleGame';
 
 type TestTownData = {
   friendlyName: string;
@@ -85,7 +86,7 @@ describe('conversationAreaCreateHandler', () => {
   });
   it('Checks for a valid session token before creating a conversation area', ()=>{
     const coveyTownID = nanoid();
-    const conversationArea :ServerConversationArea = { boundingBox: { height: 1, width: 1, x:1, y:1 }, label: nanoid(), occupantsByID: [], topic: nanoid() };
+    const conversationArea :ServerConversationArea = { boundingBox: { height: 1, width: 1, x:1, y:1 }, label: nanoid(), occupantsByID: [], topic: nanoid() , gameModel: new WordleGame()};
     const invalidSessionToken = nanoid();
 
     // Make sure to return 'undefined' regardless of what session token is passed
