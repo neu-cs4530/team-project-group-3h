@@ -1,10 +1,11 @@
-import { Button, Input, VStack, Text, HStack } from '@chakra-ui/react';
+import { Button, Input, VStack, Text, HStack, useToast } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
 import ConversationArea, { ConversationAreaListener } from '../../classes/ConversationArea';
 import { GameState } from '../../classes/GameTypes';
 import WordleGame from '../../classes/WordleGame';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
+import useMaybeVideo from '../../hooks/useMaybeVideo';
 import usePlayerConversationArea from '../../hooks/usePlayerConversationArea';
 
 type WordleRowProps = {
@@ -99,6 +100,8 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
   const currentConversationArea = usePlayerConversationArea();
   const [input, setInput] = useState('');
   const [element, setElement] = useState(<></>);
+  const video = useMaybeVideo();
+  const toast = useToast();
   console.log(currentConversationArea);
 
   function getGameState(convoArea: ConversationArea): GameState {
@@ -137,13 +140,19 @@ export default function GameBoard(props: GameBoardProps): JSX.Element {
         <Text fontSize='lg'>{displayText}</Text>
         <Input
           size='sm'
-          value={input}
-          onChange={(e) => setInput(e.currentTarget.value)}
+          type='text'
+          value={input.toLocaleLowerCase()}
+          onFocus={() => video?.pauseGame()}
+          onBlur={() => video?.unPauseGame()}
+          placeholder='Enter your guess'
+          onChange={(e) => {setInput(e.currentTarget.value)}}
           onKeyPress={e => {
             if (e.key === 'Enter' && currentConversationArea) {
               apiClient.inputGameAction({coveyTownID : currentTownID, sessionToken, conversationAreaLabel : currentConversationArea.label, 
-                gameAction : {actionString : input, playerID, team : (redTeam) ? 1 : 2}});
+                gameAction : {actionString : input.toLocaleLowerCase(), playerID, team : (redTeam) ? 1 : 2}})
+                .catch(() => {toast({duration: 1000 ,position: 'bottom-end', title: 'Not in Word List', status: 'warning', });});
               setInput('');
+              
             }
           }}
           isDisabled={(!redTeam && !blueTeam)} />
